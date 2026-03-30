@@ -573,7 +573,7 @@ async function selectSearchResult(idx) {
     isbn: searchBook.isbn?.[0] || '',
     title: searchBook.title || 'Titre inconnu',
     author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
-    genre: detectGenre(searchBook.subject),
+    genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
     description,
     cover: searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null,
     publisher: searchBook.publisher?.[0] || '',
@@ -588,43 +588,52 @@ async function selectSearchResult(idx) {
   displayPreview(currentBook);
 }
 
-function detectGenre(subjects) {
-  if (!subjects || !subjects.length) return 'Général';
-
+function detectGenre(subjects, title, author) {
   const map = {
-    'Roman': ['fiction', 'novel', 'roman', 'littérature', 'literature', 'literary', 'fiction générale', 'general fiction', 'contemporary fiction', 'french fiction'],
+    'Roman': ['fiction', 'novel', 'roman', 'littérature', 'literature', 'literary', 'general fiction', 'contemporary fiction'],
     'Policier': ['detective', 'mystery', 'crime', 'thriller', 'policier', 'suspense', 'noir'],
     'Science-fiction': ['science fiction', 'sci-fi', 'space', 'futuristic', 'dystopia', 'dystopie', 'speculative'],
-    'Fantasy': ['fantasy', 'magic', 'wizard', 'dragon', 'fantastique', 'heroic', 'supernatural', 'mytholog'],
-    'Biographie': ['biography', 'autobiography', 'memoir', 'biographie', 'mémoires', 'autobiograph'],
-    'Histoire': ['history', 'historical', 'histoire', 'war', 'guerre', 'civilization', 'ancient', 'medieval'],
+    'Fantasy': ['fantasy', 'magic', 'wizard', 'dragon', 'fantastique', 'heroic', 'supernatural'],
+    'Biographie': ['biography', 'autobiography', 'memoir', 'biographie', 'mémoires'],
+    'Histoire': ['history', 'historical', 'histoire', 'war', 'guerre', 'civilization'],
     'Philosophie': ['philosophy', 'philosophie', 'ethics', 'éthique', 'absurd', 'existential'],
-    'Sciences': ['science', 'physics', 'biology', 'chemistry', 'mathematics', 'physique', 'nature'],
-    'Développement personnel': ['self-help', 'personal development', 'motivation', 'leadership', 'productivity'],
-    'Économie': ['economics', 'economy', 'finance', 'business', 'économie', 'investing'],
-    'Psychologie': ['psychology', 'psychologie', 'mental', 'behavior', 'comportement', 'cognitive'],
-    'Art': ['art', 'painting', 'photography', 'design', 'architecture', 'music', 'musique'],
-    'Cuisine': ['cooking', 'cuisine', 'recipe', 'food', 'gastronomie', 'baking'],
-    'Voyage': ['travel', 'voyage', 'geography', 'géographie', 'exploration', 'adventure'],
+    'Sciences': ['science', 'physics', 'biology', 'chemistry', 'mathematics', 'physique'],
+    'Développement personnel': ['self-help', 'personal development', 'motivation', 'leadership'],
+    'Économie': ['economics', 'economy', 'finance', 'business', 'économie'],
+    'Psychologie': ['psychology', 'psychologie', 'mental', 'behavior', 'comportement'],
+    'Art': ['art', 'painting', 'photography', 'design', 'architecture'],
+    'Cuisine': ['cooking', 'cuisine', 'recipe', 'food', 'gastronomie'],
+    'Voyage': ['travel', 'voyage', 'geography', 'géographie', 'exploration'],
     'Jeunesse': ['children', 'juvenile', 'young adult', 'jeunesse', 'youth', 'teen'],
     'Poésie': ['poetry', 'poésie', 'poems', 'verse'],
-    'Théâtre': ['drama', 'theater', 'theatre', 'play', 'pièce'],
     'Bande dessinée': ['comics', 'graphic novel', 'manga', 'bande dessinée'],
-    'Religion': ['religion', 'spirituality', 'christianity', 'islam', 'buddhism', 'spiritual'],
-    'Politique': ['politics', 'political', 'politique', 'government', 'democracy', 'social'],
+    'Religion': ['religion', 'spirituality', 'christianity', 'islam', 'buddhism'],
+    'Politique': ['politics', 'political', 'politique', 'government', 'democracy'],
   };
 
-  const subjectsLower = subjects.map(s => s.toLowerCase());
-  for (const [genre, keywords] of Object.entries(map)) {
-    for (const subject of subjectsLower) {
-      for (const keyword of keywords) {
-        if (subject.includes(keyword)) return genre;
+  // Essai via les sujets
+  if (subjects && subjects.length) {
+    const subjectsLower = subjects.map(s => s.toLowerCase());
+    for (const [genre, keywords] of Object.entries(map)) {
+      for (const subject of subjectsLower) {
+        for (const keyword of keywords) {
+          if (subject.includes(keyword)) return genre;
+        }
       }
+    }
+    const first = subjects[0];
+    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+  }
+
+  // Fallback : cherche dans le titre et l'auteur
+  const text = ((title || '') + ' ' + (author || '')).toLowerCase();
+  for (const [genre, keywords] of Object.entries(map)) {
+    for (const keyword of keywords) {
+      if (text.includes(keyword)) return genre;
     }
   }
 
-  const first = subjects[0];
-  return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+  return 'Roman'; // Par défaut mieux que "Général"
 }
 
 function hideSearchResults() {
@@ -672,7 +681,7 @@ async function fetchBook(isbn) {
       isbn,
       title: book?.title || searchBook?.title || 'Titre inconnu',
       author: book?.authors?.map(a => a.name).join(', ') || searchBook?.author_name?.join(', ') || 'Auteur inconnu',
-      genre: detectGenre(book?.subjects?.map(s => s.name) || searchBook?.subject),
+      genre: detectGenre(book?.subjects?.map(s => s.name) || searchBook?.subject, book?.title || searchBook?.title, book?.authors?.[0]?.name || searchBook?.author_name?.[0]),
       description,
       cover: book?.cover?.large || book?.cover?.medium || (searchBook?.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
       publisher: book?.publishers?.[0]?.name || searchBook?.publisher?.[0] || '',
