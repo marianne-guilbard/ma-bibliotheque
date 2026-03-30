@@ -525,7 +525,11 @@ async function searchByTitle() {
     const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=6`);
     const data = await res.json();
     const results = data.docs?.filter(b => b.title && b.author_name) || [];
-    if (!results.length) { toast('Aucun résultat trouvé'); showLoader(false); return; }
+    if (!results.length) {
+      // Fallback Google Books
+      await fetchFromGoogleBooks(query);
+      return;
+    }
     showLoader(false);
     displaySearchResults(results);
   } catch(e) {
@@ -538,8 +542,9 @@ function displaySearchResults(results) {
   const container = document.getElementById('search-results');
   container.style.display = 'block';
   container.innerHTML = results.map((b, i) => {
-    const cover = b.cover_i
-      ? `<img class="search-result-thumb" src="https://covers.openlibrary.org/b/id/${b.cover_i}-S.jpg" onerror="this.style.display='none'">`
+    const coverUrl = b.cover_url || (b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-S.jpg` : null);
+    const cover = coverUrl
+      ? `<img class="search-result-thumb" src="${coverUrl}" onerror="this.style.display='none'">`
       : `<div class="search-result-thumb-ph">📚</div>`;
     return `<div class="search-result-item" onclick="selectSearchResult(${i})">
       ${cover}
@@ -559,6 +564,34 @@ async function selectSearchResult(idx) {
   showLoader(true);
   hidePreview();
 
+  // Si résultat Google Books
+  if (searchBook._source === 'google') {
+    const info = searchBook._raw;
+    const cover = info.imageLinks
+      ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null)
+      : null;
+    currentBook = {
+      id: Date.now(),
+      isbn: searchBook.isbn?.[0] || '',
+      title: info.title || 'Titre inconnu',
+      author: (info.authors || ['Auteur inconnu']).join(', '),
+      genre: detectGenre(info.categories, info.title, info.authors?.[0]),
+      description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
+      cover: cover ? cover.replace('http://', 'https://') : null,
+      publisher: info.publisher || '',
+      year: info.publishedDate?.slice(0,4) || '',
+      pages: info.pageCount || null,
+      language: info.language || '',
+      rating: 0,
+      note: '',
+      addedAt: new Date().toLocaleDateString('fr-FR')
+    };
+    showLoader(false);
+    displayPreview(currentBook);
+    return;
+  }
+
+  // Résultat Open Library
   let description = 'Pas de résumé disponible.';
   if (searchBook.key) {
     try {
@@ -580,7 +613,7 @@ async function selectSearchResult(idx) {
     author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
     genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
     description,
-    cover: searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null,
+    cover: searchBook.cover_url || (searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
     publisher: searchBook.publisher?.[0] || '',
     year: searchBook.first_publish_year?.toString() || '',
     pages: searchBook.number_of_pages_median || null,
@@ -647,6 +680,73 @@ function hideSearchResults() {
   container.innerHTML = '';
 }
 
+async function fetchFromGoogleBooks(query) {
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&langRestrict=fr`);
+    const data = await res.json();
+    if (!data.items || !data.items.length) {
+      // Essai sans restriction de langue
+      const res2 = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
+      const data2 = await res2.json();
+      if (!data2.items || !data2.items.length) {
+        toast('Livre non trouvé — essaie avec le titre en anglais');
+        showLoader(false);
+        return;
+      }
+      data.items = data2.items;
+    }
+
+    // Si un seul résultat ou recherche ISBN → affiche direct
+    if (data.items.length === 1 || query.startsWith('isbn:')) {
+      const info = data.items[0].volumeInfo;
+      const cover = info.imageLinks
+        ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null)
+        : null;
+      currentBook = {
+        id: Date.now(),
+        isbn: info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || '',
+        title: info.title || 'Titre inconnu',
+        author: (info.authors || ['Auteur inconnu']).join(', '),
+        genre: detectGenre(info.categories, info.title, info.authors?.[0]),
+        description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
+        cover: cover ? cover.replace('http://', 'https://') : null,
+        publisher: info.publisher || '',
+        year: info.publishedDate ? info.publishedDate.slice(0,4) : '',
+        pages: info.pageCount || null,
+        language: info.language || '',
+        rating: 0,
+        note: '',
+        addedAt: new Date().toLocaleDateString('fr-FR')
+      };
+      showLoader(false);
+      displayPreview(currentBook);
+    } else {
+      // Plusieurs résultats → affiche la liste
+      const results = data.items.map(item => {
+        const info = item.volumeInfo;
+        return {
+          title: info.title,
+          author_name: info.authors || [],
+          cover_i: null,
+          cover_url: info.imageLinks?.thumbnail?.replace('http://', 'https://') || null,
+          first_publish_year: info.publishedDate?.slice(0,4) || '',
+          publisher: info.publisher ? [info.publisher] : [],
+          subject: info.categories || [],
+          isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''],
+          key: null,
+          _source: 'google',
+          _raw: info
+        };
+      });
+      showLoader(false);
+      displaySearchResults(results);
+    }
+  } catch(e) {
+    showLoader(false);
+    toast('Erreur de connexion. Vérifie internet.');
+  }
+}
+
 async function fetchBook(isbn) {
   showLoader(true);
   hidePreview();
@@ -662,8 +762,8 @@ async function fetchBook(isbn) {
     const searchBook = searchData.docs?.[0];
 
     if (!book && !searchBook) {
-      toast('Livre non trouvé pour cet ISBN');
-      showLoader(false);
+      // Fallback Google Books
+      await fetchFromGoogleBooks(`isbn:${isbn}`);
       return;
     }
 
@@ -674,9 +774,10 @@ async function fetchBook(isbn) {
         const workRes = await fetch(`https://openlibrary.org${workKey}.json`);
         const workData = await workRes.json();
         if (workData.description) {
-          description = typeof workData.description === 'string'
+          const raw = typeof workData.description === 'string'
             ? workData.description
             : workData.description.value || description;
+          description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
         }
       } catch(e) {}
     }
