@@ -161,6 +161,11 @@
   .modal-actions { display: flex; gap: 10px; }
   .btn-delete { flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid #E5C8C8; background: transparent; color: #C0392B; font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; }
   .btn-close { flex: 2; padding: 12px; border-radius: 10px; border: none; background: var(--ink); color: var(--cream); font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; }
+  .btn-edit { flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid var(--cream-dark); background: transparent; color: var(--ink-soft); font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; }
+  .btn-save { flex: 2; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: var(--white); font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; font-weight: 500; }
+  .star-edit { font-size: 1.3rem; cursor: pointer; color: var(--cream-dark); transition: color .15s, transform .1s; user-select: none; }
+  .star-edit.active { color: var(--gold); }
+  .star-edit:hover { transform: scale(1.2); }
 
   .toast { position: fixed; bottom: calc(80px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--cream); padding: 10px 20px; border-radius: 20px; font-size: 0.82rem; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; z-index: 300; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -348,10 +353,33 @@
       <div class="modal-note-label">Ma note</div>
       <div id="modal-note-text">—</div>
     </div>
-    <div class="modal-actions">
-      <button class="btn-delete" onclick="deleteCurrentBook()">🗑 Supprimer</button>
-      <button class="btn-close" onclick="closeModal()">Fermer</button>
+
+    <div id="modal-view-mode">
+      <div class="modal-actions">
+        <button class="btn-delete" onclick="deleteCurrentBook()">🗑 Supprimer</button>
+        <button class="btn-edit" onclick="enableEditMode()">✏️ Modifier</button>
+        <button class="btn-close" onclick="closeModal()">Fermer</button>
+      </div>
     </div>
+
+    <div id="modal-edit-mode" style="display:none">
+      <div class="rating-row" style="margin-bottom:12px">
+        <span class="rating-label">Ma note</span>
+        <div class="stars" id="modal-stars-edit">
+          <span class="star-edit" data-v="1" onclick="setModalRating(1)">★</span>
+          <span class="star-edit" data-v="2" onclick="setModalRating(2)">★</span>
+          <span class="star-edit" data-v="3" onclick="setModalRating(3)">★</span>
+          <span class="star-edit" data-v="4" onclick="setModalRating(4)">★</span>
+          <span class="star-edit" data-v="5" onclick="setModalRating(5)">★</span>
+        </div>
+      </div>
+      <textarea class="note-area" id="modal-note-edit" placeholder="Ajouter une note personnelle…"></textarea>
+      <div class="modal-actions">
+        <button class="btn-close" onclick="cancelEditMode()">Annuler</button>
+        <button class="btn-save" onclick="saveBookEdit()">✓ Sauvegarder</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -648,6 +676,61 @@ function openModal(idx) {
   const wrap = document.getElementById('modal-cover-wrap');
   wrap.innerHTML = b.cover ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">` : `<div class="modal-cover-ph">📚</div>`;
   document.getElementById('modal-bg').classList.add('open');
+}
+
+let modalCurrentRating = 0;
+
+function enableEditMode() {
+  const b = library[activeModalIdx];
+  modalCurrentRating = b.rating || 0;
+  document.getElementById('modal-note-edit').value = b.note || '';
+  setModalRating(modalCurrentRating);
+  document.getElementById('modal-view-mode').style.display = 'none';
+  document.getElementById('modal-edit-mode').style.display = 'block';
+}
+
+function cancelEditMode() {
+  document.getElementById('modal-edit-mode').style.display = 'none';
+  document.getElementById('modal-view-mode').style.display = 'block';
+}
+
+function setModalRating(n) {
+  modalCurrentRating = n;
+  document.querySelectorAll('.star-edit').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.v) <= n);
+  });
+}
+
+async function saveBookEdit() {
+  if (activeModalIdx === null) return;
+  const b = library[activeModalIdx];
+  b.rating = modalCurrentRating;
+  b.note = document.getElementById('modal-note-edit').value.trim();
+
+  // Update Supabase
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/Livres?isbn=eq.${b.isbn}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ rating: b.rating, note: b.note })
+    });
+  } catch(e) { console.log('Update Supabase échoué', e); }
+
+  saveLibrary();
+  renderLibrary();
+  renderStats();
+
+  // Refresh modal display
+  const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) : '☆☆☆☆☆';
+  document.getElementById('modal-stars').innerHTML = `<span style="color:var(--gold)">${stars}</span> ${b.rating ? b.rating + '/5' : 'Non noté'}`;
+  document.getElementById('modal-note-text').textContent = b.note || 'Aucune note personnelle.';
+
+  cancelEditMode();
+  toast('✓ Modifications sauvegardées !');
 }
 
 function closeModal(e) {
