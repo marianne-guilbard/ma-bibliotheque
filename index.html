@@ -471,29 +471,36 @@ async function fetchBook(isbn) {
   showLoader(true);
   hidePreview();
   try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+    // Open Library (sans limite)
+    const res = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
     const data = await res.json();
-    if (!data.items || !data.items.length) { toast('Livre non trouvé (ISBN: ' + isbn + ')'); showLoader(false); return; }
-    const info = data.items[0].volumeInfo;
-    const cover = info.imageLinks ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || null) : null;
-    currentBook = {
-      id: Date.now(),
-      isbn,
-      title: info.title || 'Titre inconnu',
-      author: (info.authors || ['Auteur inconnu']).join(', '),
-      genre: (info.categories || ['Général'])[0],
-      description: info.description || 'Pas de résumé disponible.',
-      cover: cover ? cover.replace('http://', 'https://') : null,
-      publisher: info.publisher || '',
-      year: info.publishedDate ? info.publishedDate.slice(0,4) : '',
-      pages: info.pageCount || null,
-      language: info.language || '',
-      rating: 0,
-      note: '',
-      addedAt: new Date().toLocaleDateString('fr-FR')
-    };
-    showLoader(false);
-    displayPreview(currentBook);
+    const key = `ISBN:${isbn}`;
+    
+    if (data[key]) {
+      const book = data[key];
+      const cover = book.cover ? book.cover.large || book.cover.medium || book.cover.small : null;
+      currentBook = {
+        id: Date.now(),
+        isbn,
+        title: book.title || 'Titre inconnu',
+        author: book.authors ? book.authors.map(a => a.name).join(', ') : 'Auteur inconnu',
+        genre: book.subjects ? book.subjects[0].name : 'Général',
+        description: book.excerpts ? book.excerpts[0].text : 'Pas de résumé disponible.',
+        cover: cover || null,
+        publisher: book.publishers ? book.publishers[0].name : '',
+        year: book.publish_date ? book.publish_date.slice(-4) : '',
+        pages: book.number_of_pages || null,
+        language: '',
+        rating: 0,
+        note: '',
+        addedAt: new Date().toLocaleDateString('fr-FR')
+      };
+      showLoader(false);
+      displayPreview(currentBook);
+    } else {
+      toast('Livre non trouvé pour cet ISBN');
+      showLoader(false);
+    }
   } catch(e) {
     showLoader(false);
     toast('Erreur de connexion. Vérifie internet.');
