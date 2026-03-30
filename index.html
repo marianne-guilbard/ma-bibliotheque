@@ -471,36 +471,57 @@ async function fetchBook(isbn) {
   showLoader(true);
   hidePreview();
   try {
-    // Open Library (sans limite)
-    const res = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
-    const data = await res.json();
+    const [olRes, descRes] = await Promise.all([
+      fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`),
+      fetch(`https://openlibrary.org/search.json?isbn=${isbn}`)
+    ]);
+    const olData = await olRes.json();
+    const searchData = await descRes.json();
     const key = `ISBN:${isbn}`;
-    
-    if (data[key]) {
-      const book = data[key];
-      const cover = book.cover ? book.cover.large || book.cover.medium || book.cover.small : null;
-      currentBook = {
-        id: Date.now(),
-        isbn,
-        title: book.title || 'Titre inconnu',
-        author: book.authors ? book.authors.map(a => a.name).join(', ') : 'Auteur inconnu',
-        genre: book.subjects ? book.subjects[0].name : 'Général',
-        description: book.excerpts ? book.excerpts[0].text : 'Pas de résumé disponible.',
-        cover: cover || null,
-        publisher: book.publishers ? book.publishers[0].name : '',
-        year: book.publish_date ? book.publish_date.slice(-4) : '',
-        pages: book.number_of_pages || null,
-        language: '',
-        rating: 0,
-        note: '',
-        addedAt: new Date().toLocaleDateString('fr-FR')
-      };
-      showLoader(false);
-      displayPreview(currentBook);
-    } else {
+    const book = olData[key];
+    const searchBook = searchData.docs?.[0];
+
+    if (!book && !searchBook) {
       toast('Livre non trouvé pour cet ISBN');
       showLoader(false);
+      return;
     }
+
+    const title = book?.title || searchBook?.title || 'Titre inconnu';
+    const authors = book?.authors?.map(a => a.name).join(', ')
+      || searchBook?.author_name?.join(', ')
+      || 'Auteur inconnu';
+    const genre = book?.subjects?.[0]?.name
+      || searchBook?.subject?.[0]
+      || 'Général';
+    const cover = book?.cover?.large
+      || book?.cover?.medium
+      || (searchBook?.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null);
+    const description = book?.excerpts?.[0]?.text
+      || searchBook?.first_sentence?.[0]
+      || 'Pas de résumé disponible.';
+    const publisher = book?.publishers?.[0]?.name || searchBook?.publisher?.[0] || '';
+    const year = book?.publish_date?.slice(-4) || searchBook?.first_publish_year?.toString() || '';
+    const pages = book?.number_of_pages || searchBook?.number_of_pages_median || null;
+
+    currentBook = {
+      id: Date.now(),
+      isbn,
+      title,
+      author: authors,
+      genre,
+      description,
+      cover,
+      publisher,
+      year,
+      pages,
+      language: '',
+      rating: 0,
+      note: '',
+      addedAt: new Date().toLocaleDateString('fr-FR')
+    };
+    showLoader(false);
+    displayPreview(currentBook);
   } catch(e) {
     showLoader(false);
     toast('Erreur de connexion. Vérifie internet.');
