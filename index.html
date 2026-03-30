@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Ma Bibliothèque">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Ma Bibliothèque</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -1053,6 +1054,8 @@
 <script src="https://unpkg.com/@zxing/library@0.19.3/umd/index.min.js"></script>
 <script>
 // ── STATE ──
+const GITHUB_TOKEN = localStorage.getItem('gh_token') || '';
+const GIST_ID = 'https://gist.github.com/marianne-guilbard/7992bb8960da5a48f30ad804f2dc962b';
 let library = JSON.parse(localStorage.getItem('library') || '[]');
 let currentBook = null;
 let currentRating = 0;
@@ -1062,9 +1065,12 @@ let codeReader = null;
 let scanning = false;
 
 // ── INIT ──
-updateHeaderStats();
-renderLibrary();
-renderStats();
+loadFromGist().then(() => {
+  updateHeaderStats();
+  renderLibrary();
+  renderStats();
+  updateBackupLabel();
+});
 
 // ── NAVIGATION ──
 function showPage(id) {
@@ -1343,6 +1349,47 @@ function renderStats() {
 function showLoader(on) { document.getElementById('loader').classList.toggle('active', on); }
 function saveLibrary() {
   localStorage.setItem('library', JSON.stringify(library));
+  syncToGist();
+}
+
+async function syncToGist() {
+  try {
+    await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        files: {
+          'bibliotheque.json': {
+            content: JSON.stringify({ livres: library }, null, 2)
+          }
+        }
+      })
+    });
+  } catch(e) {
+    console.log('Sync Gist échouée', e);
+  }
+}
+
+async function loadFromGist() {
+  try {
+    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+    });
+    const data = await res.json();
+    const content = data.files['bibliotheque.json']?.content;
+    if (content) {
+      const parsed = JSON.parse(content);
+      if (parsed.livres?.length > 0) {
+        library = parsed.livres;
+        localStorage.setItem('library', JSON.stringify(library));
+      }
+    }
+  } catch(e) {
+    console.log('Chargement Gist échoué, utilisation localStorage', e);
+  }
 }
 function updateHeaderStats() {
   const n = library.length;
