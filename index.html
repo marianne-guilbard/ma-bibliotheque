@@ -37,7 +37,6 @@
     overflow-x: hidden;
   }
 
-  /* ── HEADER ── */
   .header {
     background: var(--ink);
     color: var(--cream);
@@ -53,801 +52,168 @@
     max-width: 480px;
     margin: 0 auto;
   }
-  .header h1 {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-  }
+  .header h1 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; letter-spacing: 0.02em; }
   .header h1 span { color: var(--accent); font-style: italic; }
-  .header-stats {
-    font-size: 0.72rem;
-    color: var(--ink-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+  .header-stats { font-size: 0.72rem; color: var(--ink-muted); letter-spacing: 0.08em; text-transform: uppercase; }
 
-  /* ── NAV TABS ── */
-  .tabs {
-    display: flex;
-    background: var(--ink);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    max-width: 480px;
-    margin: 0 auto;
-  }
+  .tabs { display: flex; background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08); max-width: 480px; margin: 0 auto; }
   .tab-btn {
-    flex: 1;
-    padding: 10px 4px;
-    background: none;
-    border: none;
-    color: var(--ink-muted);
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: color .2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
+    flex: 1; padding: 10px 4px; background: none; border: none; color: var(--ink-muted);
+    font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; transition: color .2s; display: flex; flex-direction: column; align-items: center; gap: 3px;
   }
   .tab-btn.active { color: var(--accent); }
   .tab-btn svg { width: 18px; height: 18px; }
 
-  /* ── PAGES ── */
   .page { display: none; padding: 20px; max-width: 480px; margin: 0 auto; padding-bottom: calc(20px + var(--safe-bottom)); }
   .page.active { display: block; }
 
-  /* ── SCAN PAGE ── */
   .scan-area {
-    background: var(--ink);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    aspect-ratio: 4/3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
+    background: var(--ink); border-radius: 16px; overflow: hidden; position: relative;
+    aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
   }
-  #scanner-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-  }
-  .scan-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    color: var(--ink-muted);
-  }
+  #scanner-video { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .scan-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--ink-muted); }
   .scan-placeholder svg { width: 56px; height: 56px; opacity: 0.4; }
-  .scan-overlay {
-    position: absolute;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
+  .scan-overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none; }
   .scan-overlay.active { display: flex; }
-  .scan-frame {
-    width: 220px;
-    height: 120px;
-    position: relative;
-  }
-  .scan-frame::before, .scan-frame::after,
-  .scan-frame span::before, .scan-frame span::after {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    border-color: var(--accent);
-    border-style: solid;
+  .scan-frame { width: 220px; height: 120px; position: relative; }
+  .scan-frame::before, .scan-frame::after, .scan-frame span::before, .scan-frame span::after {
+    content: ''; position: absolute; width: 24px; height: 24px; border-color: var(--accent); border-style: solid;
   }
   .scan-frame::before { top: 0; left: 0; border-width: 2px 0 0 2px; }
   .scan-frame::after { top: 0; right: 0; border-width: 2px 2px 0 0; }
   .scan-frame span::before { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
   .scan-frame span::after { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
   .scan-line {
-    position: absolute;
-    left: 8px; right: 8px;
-    height: 2px;
+    position: absolute; left: 8px; right: 8px; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    animation: scanline 1.8s ease-in-out infinite;
-    top: 50%;
+    animation: scanline 1.8s ease-in-out infinite; top: 50%;
   }
-  @keyframes scanline {
-    0% { top: 10%; opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { top: 90%; opacity: 0; }
-  }
+  @keyframes scanline { 0% { top: 10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 90%; opacity: 0; } }
 
-  .btn {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    border: none;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all .2s;
-    letter-spacing: 0.03em;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: var(--white);
-  }
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 10px; border: none; font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all .2s; letter-spacing: 0.03em; }
+  .btn-primary { background: var(--accent); color: var(--white); }
   .btn-primary:active { transform: scale(0.98); background: #A8431F; }
-  .btn-secondary {
-    background: var(--cream-dark);
-    color: var(--ink-soft);
-    margin-top: 10px;
-  }
-  .btn-outline {
-    background: transparent;
-    color: var(--ink-soft);
-    border: 1.5px solid var(--cream-dark);
-    margin-top: 10px;
-  }
+  .btn-secondary { background: var(--cream-dark); color: var(--ink-soft); margin-top: 10px; }
 
-  /* ── ISBN manual input ── */
-  .isbn-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-  .isbn-input {
-    flex: 1;
-    padding: 13px 14px;
-    border-radius: 10px;
-    border: 1.5px solid var(--cream-dark);
-    background: var(--white);
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    color: var(--ink);
-    outline: none;
-    transition: border-color .2s;
-  }
+  .isbn-row { display: flex; gap: 8px; margin-top: 10px; }
+  .isbn-input { flex: 1; padding: 13px 14px; border-radius: 10px; border: 1.5px solid var(--cream-dark); background: var(--white); font-family: var(--font-body); font-size: 0.9rem; color: var(--ink); outline: none; transition: border-color .2s; }
   .isbn-input:focus { border-color: var(--accent); }
-  .isbn-btn {
-    padding: 13px 18px;
-    background: var(--ink);
-    color: var(--cream);
-    border: none;
-    border-radius: 10px;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: opacity .2s;
-  }
-  .isbn-btn:active { opacity: 0.8; }
+  .isbn-btn { padding: 13px 18px; background: var(--ink); color: var(--cream); border: none; border-radius: 10px; font-family: var(--font-body); font-size: 0.9rem; cursor: pointer; }
 
-  /* ── BOOK PREVIEW CARD ── */
-  .book-preview {
-    background: var(--white);
-    border-radius: 14px;
-    padding: 20px;
-    display: none;
-    margin-top: 16px;
-    box-shadow: 0 2px 16px var(--shadow);
-    animation: slideUp .3s ease;
-  }
+  .book-preview { background: var(--white); border-radius: 14px; padding: 20px; display: none; margin-top: 16px; box-shadow: 0 2px 16px var(--shadow); animation: slideUp .3s ease; }
   .book-preview.visible { display: block; }
-  @keyframes slideUp {
-    from { transform: translateY(12px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  .preview-top {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  .cover-img {
-    width: 72px;
-    height: 108px;
-    border-radius: 6px;
-    object-fit: cover;
-    background: var(--cream-dark);
-    flex-shrink: 0;
-    box-shadow: 2px 4px 12px var(--shadow);
-  }
-  .cover-placeholder {
-    width: 72px;
-    height: 108px;
-    border-radius: 6px;
-    background: var(--cream-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--ink-muted);
-    font-size: 1.6rem;
-  }
+  @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .preview-top { display: flex; gap: 16px; margin-bottom: 16px; }
+  .cover-img { width: 72px; height: 108px; border-radius: 6px; object-fit: cover; background: var(--cream-dark); flex-shrink: 0; box-shadow: 2px 4px 12px var(--shadow); }
+  .cover-placeholder { width: 72px; height: 108px; border-radius: 6px; background: var(--cream-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--ink-muted); font-size: 1.6rem; }
   .preview-info { flex: 1; }
-  .preview-title {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    line-height: 1.3;
-    margin-bottom: 4px;
-  }
-  .preview-author {
-    font-size: 0.82rem;
-    color: var(--accent);
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
-  .preview-genre {
-    display: inline-block;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-  .preview-desc {
-    font-size: 0.82rem;
-    color: var(--ink-soft);
-    line-height: 1.5;
-    margin-bottom: 14px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+  .preview-title { font-family: var(--font-display); font-size: 1.05rem; line-height: 1.3; margin-bottom: 4px; }
+  .preview-author { font-size: 0.82rem; color: var(--accent); margin-bottom: 6px; font-weight: 500; }
+  .preview-genre { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+  .preview-desc { font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-  /* ── STAR RATING ── */
-  .rating-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .rating-label {
-    font-size: 0.78rem;
-    color: var(--ink-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .stars {
-    display: flex;
-    gap: 4px;
-  }
-  .star {
-    font-size: 1.3rem;
-    cursor: pointer;
-    color: var(--cream-dark);
-    transition: color .15s, transform .1s;
-    user-select: none;
-  }
+  .rating-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .rating-label { font-size: 0.78rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stars { display: flex; gap: 4px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: var(--cream-dark); transition: color .15s, transform .1s; user-select: none; }
   .star.active { color: var(--gold); }
   .star:hover { transform: scale(1.2); }
 
-  /* ── NOTE TEXTAREA ── */
-  .note-area {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1.5px solid var(--cream-dark);
-    background: var(--cream);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--ink);
-    resize: none;
-    height: 80px;
-    outline: none;
-    transition: border-color .2s;
-    margin-bottom: 12px;
-  }
+  .note-area { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--cream-dark); background: var(--cream); font-family: var(--font-body); font-size: 0.85rem; color: var(--ink); resize: none; height: 80px; outline: none; transition: border-color .2s; margin-bottom: 12px; }
   .note-area:focus { border-color: var(--accent); }
 
-  /* ── LOADER ── */
-  .loader {
-    display: none;
-    text-align: center;
-    padding: 24px;
-    color: var(--ink-muted);
-    font-size: 0.85rem;
-  }
+  .loader { display: none; text-align: center; padding: 24px; color: var(--ink-muted); font-size: 0.85rem; }
   .loader.active { display: block; }
-  .spinner {
-    width: 28px;
-    height: 28px;
-    border: 2.5px solid var(--cream-dark);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-    margin: 0 auto 8px;
-  }
+  .spinner { width: 28px; height: 28px; border: 2.5px solid var(--cream-dark); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 8px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── LIBRARY PAGE ── */
-  .library-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .library-title {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    font-weight: 400;
-  }
-  .book-count {
-    font-size: 0.75rem;
-    color: var(--ink-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
+  .library-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .library-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; }
+  .book-count { font-size: 0.75rem; color: var(--ink-muted); letter-spacing: 0.06em; text-transform: uppercase; }
 
-  /* Filter row */
-  .filter-row {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    margin-bottom: 16px;
-    scrollbar-width: none;
-  }
+  .filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; scrollbar-width: none; }
   .filter-row::-webkit-scrollbar { display: none; }
-  .filter-chip {
-    flex-shrink: 0;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1.5px solid var(--cream-dark);
-    background: transparent;
-    color: var(--ink-soft);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    transition: all .15s;
-    white-space: nowrap;
-  }
-  .filter-chip.active {
-    background: var(--ink);
-    color: var(--cream);
-    border-color: var(--ink);
-  }
+  .filter-chip { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--cream-dark); background: transparent; color: var(--ink-soft); font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.04em; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .filter-chip.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
 
-  /* Sort row */
-  .sort-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 14px;
-    align-items: center;
-  }
+  .sort-row { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
   .sort-label { font-size: 0.75rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
-  .sort-select {
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1.5px solid var(--cream-dark);
-    background: var(--white);
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    color: var(--ink);
-    outline: none;
-  }
+  .sort-select { padding: 5px 10px; border-radius: 8px; border: 1.5px solid var(--cream-dark); background: var(--white); font-family: var(--font-body); font-size: 0.8rem; color: var(--ink); outline: none; }
 
-  /* Book cards */
   .books-grid { display: flex; flex-direction: column; gap: 12px; }
-  .book-card {
-    background: var(--white);
-    border-radius: 14px;
-    padding: 14px;
-    display: flex;
-    gap: 14px;
-    box-shadow: 0 1px 8px var(--shadow);
-    cursor: pointer;
-    transition: transform .15s, box-shadow .15s;
-    position: relative;
-    overflow: hidden;
-  }
+  .book-card { background: var(--white); border-radius: 14px; padding: 14px; display: flex; gap: 14px; box-shadow: 0 1px 8px var(--shadow); cursor: pointer; transition: transform .15s, box-shadow .15s; position: relative; overflow: hidden; }
   .book-card:active { transform: scale(0.98); }
-  .book-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity .2s;
-  }
+  .book-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); opacity: 0; transition: opacity .2s; }
   .book-card:hover::before { opacity: 1; }
-  .card-cover {
-    width: 52px;
-    height: 78px;
-    border-radius: 5px;
-    object-fit: cover;
-    flex-shrink: 0;
-    background: var(--cream-dark);
-    box-shadow: 1px 2px 8px var(--shadow);
-  }
-  .card-cover-ph {
-    width: 52px;
-    height: 78px;
-    border-radius: 5px;
-    background: var(--cream-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    color: var(--ink-muted);
-    font-size: 1.2rem;
-  }
+  .card-cover { width: 52px; height: 78px; border-radius: 5px; object-fit: cover; flex-shrink: 0; background: var(--cream-dark); box-shadow: 1px 2px 8px var(--shadow); }
+  .card-cover-ph { width: 52px; height: 78px; border-radius: 5px; background: var(--cream-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--ink-muted); font-size: 1.2rem; }
   .card-info { flex: 1; min-width: 0; }
-  .card-title {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    line-height: 1.3;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .card-author {
-    font-size: 0.78rem;
-    color: var(--accent);
-    font-weight: 500;
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  .card-title { font-family: var(--font-display); font-size: 0.95rem; line-height: 1.3; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-author { font-size: 0.78rem; color: var(--accent); font-weight: 500; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-stars { font-size: 0.8rem; margin-bottom: 4px; }
-  .card-genre {
-    display: inline-block;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 0.65rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-  .card-note {
-    font-size: 0.75rem;
-    color: var(--ink-muted);
-    margin-top: 4px;
-    font-style: italic;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .card-date {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 0.65rem;
-    color: var(--ink-muted);
-    letter-spacing: 0.03em;
-  }
+  .card-genre { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; font-weight: 500; }
+  .card-note { font-size: 0.75rem; color: var(--ink-muted); margin-top: 4px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-date { position: absolute; top: 12px; right: 12px; font-size: 0.65rem; color: var(--ink-muted); letter-spacing: 0.03em; }
 
-  .empty-state {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--ink-muted);
-  }
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--ink-muted); }
   .empty-state svg { width: 56px; height: 56px; opacity: 0.3; margin-bottom: 12px; }
   .empty-state p { font-family: var(--font-display); font-style: italic; font-size: 1rem; }
 
-  /* ── STATS PAGE ── */
-  .stats-title {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    font-weight: 400;
-  }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .stat-card {
-    background: var(--white);
-    border-radius: 14px;
-    padding: 18px 16px;
-    box-shadow: 0 1px 8px var(--shadow);
-    text-align: center;
-  }
-  .stat-number {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .stat-label {
-    font-size: 0.72rem;
-    color: var(--ink-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-  }
+  .stats-title { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 20px; font-weight: 400; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: var(--white); border-radius: 14px; padding: 18px 16px; box-shadow: 0 1px 8px var(--shadow); text-align: center; }
+  .stat-number { font-family: var(--font-display); font-size: 2rem; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 0.72rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.07em; }
   .genres-list { background: var(--white); border-radius: 14px; padding: 16px; box-shadow: 0 1px 8px var(--shadow); }
-  .genres-title {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--ink-muted);
-    margin-bottom: 12px;
-  }
-  .genre-bar-row {
-    margin-bottom: 10px;
-  }
-  .genre-bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8rem;
-    margin-bottom: 4px;
-    color: var(--ink-soft);
-  }
-  .genre-bar-track {
-    height: 6px;
-    background: var(--cream-dark);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .genre-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 3px;
-    transition: width .6s ease;
-  }
+  .genres-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-muted); margin-bottom: 12px; }
+  .genre-bar-row { margin-bottom: 10px; }
+  .genre-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; color: var(--ink-soft); }
+  .genre-bar-track { height: 6px; background: var(--cream-dark); border-radius: 3px; overflow: hidden; }
+  .genre-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .6s ease; }
 
-  /* ── MODAL detail ── */
-  .modal-bg {
-    position: fixed;
-    inset: 0;
-    background: rgba(26,20,16,0.6);
-    z-index: 200;
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-  }
+  .modal-bg { position: fixed; inset: 0; background: rgba(26,20,16,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
   .modal-bg.open { display: flex; }
-  .modal {
-    background: var(--white);
-    border-radius: 20px 20px 0 0;
-    padding: 24px 20px calc(24px + var(--safe-bottom));
-    width: 100%;
-    max-width: 480px;
-    max-height: 88vh;
-    overflow-y: auto;
-    animation: slideUpModal .25s ease;
-  }
-  @keyframes slideUpModal {
-    from { transform: translateY(40px); }
-    to { transform: translateY(0); }
-  }
-  .modal-handle {
-    width: 36px;
-    height: 4px;
-    background: var(--cream-dark);
-    border-radius: 2px;
-    margin: 0 auto 20px;
-  }
-  .modal-cover-row {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  .modal-cover {
-    width: 80px;
-    height: 120px;
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 2px 4px 16px var(--shadow);
-    flex-shrink: 0;
-    background: var(--cream-dark);
-  }
-  .modal-cover-ph {
-    width: 80px;
-    height: 120px;
-    border-radius: 8px;
-    background: var(--cream-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 2rem;
-    color: var(--ink-muted);
-  }
-  .modal-title {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    line-height: 1.3;
-    margin-bottom: 4px;
-  }
+  .modal { background: var(--white); border-radius: 20px 20px 0 0; padding: 24px 20px calc(24px + var(--safe-bottom)); width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto; animation: slideUpModal .25s ease; }
+  @keyframes slideUpModal { from { transform: translateY(40px); } to { transform: translateY(0); } }
+  .modal-handle { width: 36px; height: 4px; background: var(--cream-dark); border-radius: 2px; margin: 0 auto 20px; }
+  .modal-cover-row { display: flex; gap: 16px; margin-bottom: 16px; }
+  .modal-cover { width: 80px; height: 120px; border-radius: 8px; object-fit: cover; box-shadow: 2px 4px 16px var(--shadow); flex-shrink: 0; background: var(--cream-dark); }
+  .modal-cover-ph { width: 80px; height: 120px; border-radius: 8px; background: var(--cream-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 2rem; color: var(--ink-muted); }
+  .modal-title { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.3; margin-bottom: 4px; }
   .modal-author { font-size: 0.85rem; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
-  .modal-genre {
-    display: inline-block;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
+  .modal-genre { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; font-weight: 500; margin-bottom: 6px; }
   .modal-stars { font-size: 1.1rem; margin-bottom: 8px; }
   .modal-date { font-size: 0.75rem; color: var(--ink-muted); }
-  .modal-desc {
-    font-size: 0.85rem;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    margin-bottom: 14px;
-    border-top: 1px solid var(--cream-dark);
-    padding-top: 14px;
-  }
-  .modal-note {
-    background: var(--cream);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 0.85rem;
-    color: var(--ink-soft);
-    font-style: italic;
-    line-height: 1.5;
-    margin-bottom: 16px;
-  }
-  .modal-note-label {
-    font-style: normal;
-    font-size: 0.72rem;
-    color: var(--ink-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 4px;
-    font-family: var(--font-body);
-  }
+  .modal-desc { font-size: 0.85rem; color: var(--ink-soft); line-height: 1.6; margin-bottom: 14px; border-top: 1px solid var(--cream-dark); padding-top: 14px; }
+  .modal-note { background: var(--cream); border-radius: 10px; padding: 12px 14px; font-size: 0.85rem; color: var(--ink-soft); font-style: italic; line-height: 1.5; margin-bottom: 16px; }
+  .modal-note-label { font-style: normal; font-size: 0.72rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; font-family: var(--font-body); }
   .modal-actions { display: flex; gap: 10px; }
-  .btn-delete {
-    flex: 1;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1.5px solid #E5C8C8;
-    background: transparent;
-    color: #C0392B;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-  .btn-close {
-    flex: 2;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: var(--ink);
-    color: var(--cream);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
+  .btn-delete { flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid #E5C8C8; background: transparent; color: #C0392B; font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; }
+  .btn-close { flex: 2; padding: 12px; border-radius: 10px; border: none; background: var(--ink); color: var(--cream); font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; }
 
-  /* ── TOAST ── */
-  .toast {
-    position: fixed;
-    bottom: calc(80px + var(--safe-bottom));
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--ink);
-    color: var(--cream);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    opacity: 0;
-    transition: all .3s;
-    pointer-events: none;
-    white-space: nowrap;
-    z-index: 300;
-  }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  .toast { position: fixed; bottom: calc(80px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--cream); padding: 10px 20px; border-radius: 20px; font-size: 0.82rem; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; z-index: 300; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ── DATA SAFETY SECTION ── */
-  .data-section {
-    background: var(--white);
-    border-radius: 14px;
-    padding: 18px 16px;
-    box-shadow: 0 1px 8px var(--shadow);
-    margin-top: 16px;
-  }
-  .data-section-title {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--ink-muted);
-    margin-bottom: 12px;
-  }
+  .data-section { background: var(--white); border-radius: 14px; padding: 18px 16px; box-shadow: 0 1px 8px var(--shadow); margin-top: 16px; }
+  .data-section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-muted); margin-bottom: 12px; }
   .data-actions { display: flex; flex-direction: column; gap: 10px; }
-  .btn-export {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 13px 16px;
-    border-radius: 10px;
-    border: 1.5px solid var(--cream-dark);
-    background: var(--cream);
-    color: var(--ink-soft);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all .15s;
-    text-align: left;
-  }
+  .btn-export { display: flex; align-items: center; gap: 10px; padding: 13px 16px; border-radius: 10px; border: 1.5px solid var(--cream-dark); background: var(--cream); color: var(--ink-soft); font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; transition: all .15s; text-align: left; }
   .btn-export:active { background: var(--cream-dark); }
-  .btn-export .export-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 1rem;
-  }
+  .btn-export .export-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1rem; }
   .icon-json { background: #E8F4E8; }
   .icon-csv  { background: #E8F0F8; }
   .icon-import { background: #F4EBE8; }
   .export-text { flex: 1; }
   .export-label { font-weight: 500; font-size: 0.85rem; color: var(--ink); }
   .export-desc  { font-size: 0.73rem; color: var(--ink-muted); margin-top: 1px; }
-  .last-backup {
-    font-size: 0.72rem;
-    color: var(--ink-muted);
-    text-align: center;
-    margin-top: 10px;
-    font-style: italic;
-  }
-  .safety-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #E8F4E8;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-top: 12px;
-    font-size: 0.78rem;
-    color: #2E7D32;
-    line-height: 1.4;
-  }
+  .last-backup { font-size: 0.72rem; color: var(--ink-muted); text-align: center; margin-top: 10px; font-style: italic; }
+  .safety-badge { display: flex; align-items: center; gap: 8px; background: #E8F4E8; border-radius: 10px; padding: 10px 12px; margin-top: 12px; font-size: 0.78rem; color: #2E7D32; line-height: 1.4; }
 
-  /* ── INSTALL BANNER ── */
-  .install-banner {
-    background: var(--accent-light);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    font-size: 0.78rem;
-    color: var(--accent);
-    line-height: 1.4;
-  }
+  .install-banner { background: var(--accent-light); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 0.78rem; color: var(--accent); line-height: 1.4; }
   .install-banner svg { flex-shrink: 0; margin-top: 2px; }
-  .install-close {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: var(--accent);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0 0 0 8px;
-  }
+  .install-close { margin-left: auto; background: none; border: none; color: var(--accent); cursor: pointer; font-size: 1rem; padding: 0 0 0 8px; }
 </style>
 </head>
 <body>
@@ -892,22 +258,15 @@
     </div>
   </div>
 
-  <button class="btn btn-primary" id="scan-btn" onclick="startScanner()">
-    📷 Scanner un code-barres
-  </button>
-  <button class="btn btn-secondary" id="stop-btn" style="display:none" onclick="stopScanner()">
-    ✕ Arrêter le scanner
-  </button>
+  <button class="btn btn-primary" id="scan-btn" onclick="startScanner()">📷 Scanner un code-barres</button>
+  <button class="btn btn-secondary" id="stop-btn" style="display:none" onclick="stopScanner()">✕ Arrêter le scanner</button>
 
   <div class="isbn-row">
     <input class="isbn-input" id="isbn-input" type="text" inputmode="numeric" placeholder="Saisir ISBN manuellement…" maxlength="17">
     <button class="isbn-btn" onclick="searchByISBN()">→</button>
   </div>
 
-  <div class="loader" id="loader">
-    <div class="spinner"></div>
-    Recherche en cours…
-  </div>
+  <div class="loader" id="loader"><div class="spinner"></div>Recherche en cours…</div>
 
   <div class="book-preview" id="book-preview">
     <div class="preview-top">
@@ -940,11 +299,9 @@
     <div class="library-title">Mes livres</div>
     <div class="book-count" id="book-count">—</div>
   </div>
-
   <div class="filter-row" id="filter-row">
     <button class="filter-chip active" onclick="filterBooks('all', this)">Tous</button>
   </div>
-
   <div class="sort-row">
     <span class="sort-label">Trier par</span>
     <select class="sort-select" onchange="renderLibrary()">
@@ -954,7 +311,6 @@
       <option value="rating">Note</option>
     </select>
   </div>
-
   <div class="books-grid" id="books-grid"></div>
 </div>
 
@@ -962,62 +318,39 @@
 <div class="page" id="page-stats">
   <div class="stats-title">Statistiques</div>
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-number" id="stat-total">0</div>
-      <div class="stat-label">Livres lus</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="stat-avg">—</div>
-      <div class="stat-label">Note moyenne</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="stat-authors">0</div>
-      <div class="stat-label">Auteurs différents</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="stat-genres">0</div>
-      <div class="stat-label">Genres</div>
-    </div>
+    <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">Livres lus</div></div>
+    <div class="stat-card"><div class="stat-number" id="stat-avg">—</div><div class="stat-label">Note moyenne</div></div>
+    <div class="stat-card"><div class="stat-number" id="stat-authors">0</div><div class="stat-label">Auteurs différents</div></div>
+    <div class="stat-card"><div class="stat-number" id="stat-genres">0</div><div class="stat-label">Genres</div></div>
   </div>
   <div class="genres-list" id="genres-chart">
     <div class="genres-title">Répartition par genre</div>
     <div id="genres-bars"></div>
   </div>
-
-  <!-- DATA SAFETY -->
   <div class="data-section">
     <div class="data-section-title">Mes données — Sauvegardes</div>
     <div class="data-actions">
       <button class="btn-export" onclick="exportJSON()">
         <div class="export-icon icon-json">📄</div>
-        <div class="export-text">
-          <div class="export-label">Exporter en JSON</div>
-          <div class="export-desc">Format complet · réimportable · universel</div>
-        </div>
+        <div class="export-text"><div class="export-label">Exporter en JSON</div><div class="export-desc">Format complet · réimportable · universel</div></div>
         <span style="color:var(--ink-muted);font-size:0.8rem">↓</span>
       </button>
       <button class="btn-export" onclick="exportCSV()">
         <div class="export-icon icon-csv">📊</div>
-        <div class="export-text">
-          <div class="export-label">Exporter en CSV</div>
-          <div class="export-desc">Ouvrir dans Excel, Notion, Google Sheets…</div>
-        </div>
+        <div class="export-text"><div class="export-label">Exporter en CSV</div><div class="export-desc">Ouvrir dans Excel, Notion, Google Sheets…</div></div>
         <span style="color:var(--ink-muted);font-size:0.8rem">↓</span>
       </button>
       <button class="btn-export" onclick="document.getElementById('import-file').click()">
         <div class="export-icon icon-import">📥</div>
-        <div class="export-text">
-          <div class="export-label">Importer un JSON</div>
-          <div class="export-desc">Restaurer depuis une sauvegarde précédente</div>
-        </div>
+        <div class="export-text"><div class="export-label">Importer un JSON</div><div class="export-desc">Restaurer depuis une sauvegarde précédente</div></div>
         <span style="color:var(--ink-muted);font-size:0.8rem">↑</span>
       </button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
     </div>
     <div class="last-backup" id="last-backup-label">Aucune sauvegarde enregistrée</div>
     <div class="safety-badge">
-      <span style="font-size:1rem">🔒</span>
-      <span>Tes données restent sur ton téléphone. Exporte régulièrement ton JSON dans <b>iCloud Drive</b> ou <b>Google Drive</b> pour ne jamais rien perdre.</span>
+      <span style="font-size:1rem">☁️</span>
+      <span>Tes données sont synchronisées automatiquement sur <b>Supabase</b> à chaque ajout ou suppression.</span>
     </div>
   </div>
 </div>
@@ -1050,12 +383,15 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ZXing barcode scanner -->
 <script src="https://unpkg.com/@zxing/library@0.19.3/umd/index.min.js"></script>
 <script>
-// ── STATE ──
-const GITHUB_TOKEN = localStorage.getItem('gh_token') || '';
-const GIST_ID = localStorage.getItem('gist_id') || '';
+// ════════════════════════════════════════════
+// ⚙️  CONFIGURATION — remplace ces 2 valeurs
+// ════════════════════════════════════════════
+const SUPABASE_URL = 'https://ziiefhonxqbxipsjmqun.supabase.co'; 
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppaWVmaG9ueHFieGlwc2ptcXVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MDMxNDEsImV4cCI6MjA5MDQ3OTE0MX0.x0wHnAmFxAV3T8m8O6Ps-Rik8OUXGPMcAFKC1Gb_9HU ';   
+// ════════════════════════════════════════════
+
 let library = JSON.parse(localStorage.getItem('library') || '[]');
 let currentBook = null;
 let currentRating = 0;
@@ -1065,7 +401,7 @@ let codeReader = null;
 let scanning = false;
 
 // ── INIT ──
-loadFromGist().then(() => {
+loadFromSupabase().then(() => {
   updateHeaderStats();
   renderLibrary();
   renderStats();
@@ -1086,28 +422,20 @@ function showPage(id) {
 
 // ── SCANNER ──
 async function startScanner() {
-  if (typeof ZXing === 'undefined') {
-    toast('Scanner non disponible, utilise la saisie manuelle'); return;
-  }
+  if (typeof ZXing === 'undefined') { toast('Scanner non disponible, utilise la saisie manuelle'); return; }
   try {
     const hints = new Map();
-    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
-      ZXing.BarcodeFormat.EAN_13,
-      ZXing.BarcodeFormat.EAN_8,
-      ZXing.BarcodeFormat.ISBN
-    ]);
+    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [ZXing.BarcodeFormat.EAN_13, ZXing.BarcodeFormat.EAN_8, ZXing.BarcodeFormat.ISBN]);
     codeReader = new ZXing.BrowserMultiFormatReader(hints);
     const devices = await codeReader.listVideoInputDevices();
     if (!devices.length) { toast('Pas de caméra détectée'); return; }
-    const deviceId = devices[devices.length - 1].deviceId; // back cam
-
+    const deviceId = devices[devices.length - 1].deviceId;
     document.getElementById('scanner-video').style.display = 'block';
     document.getElementById('scan-placeholder').style.display = 'none';
     document.getElementById('scan-overlay').classList.add('active');
     document.getElementById('scan-btn').style.display = 'none';
     document.getElementById('stop-btn').style.display = 'block';
     scanning = true;
-
     codeReader.decodeFromVideoDevice(deviceId, 'scanner-video', (result, err) => {
       if (result) {
         const isbn = result.getText().replace(/-/g,'');
@@ -1147,9 +475,7 @@ async function fetchBook(isbn) {
     const data = await res.json();
     if (!data.items || !data.items.length) { toast('Livre non trouvé (ISBN: ' + isbn + ')'); showLoader(false); return; }
     const info = data.items[0].volumeInfo;
-    const cover = info.imageLinks
-      ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || null)
-      : null;
+    const cover = info.imageLinks ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || null) : null;
     currentBook = {
       id: Date.now(),
       isbn,
@@ -1180,11 +506,7 @@ function displayPreview(book) {
   document.getElementById('prev-genre').textContent = book.genre;
   document.getElementById('prev-desc').textContent = book.description.slice(0, 200) + (book.description.length > 200 ? '…' : '');
   const wrap = document.getElementById('preview-cover-wrap');
-  if (book.cover) {
-    wrap.innerHTML = `<img class="cover-img" src="${book.cover}" onerror="this.style.display='none'">`;
-  } else {
-    wrap.innerHTML = `<div class="cover-placeholder">📚</div>`;
-  }
+  wrap.innerHTML = book.cover ? `<img class="cover-img" src="${book.cover}" onerror="this.style.display='none'">` : `<div class="cover-placeholder">📚</div>`;
   setRating(0);
   document.getElementById('note-input').value = '';
   document.getElementById('book-preview').classList.add('visible');
@@ -1199,9 +521,7 @@ function hidePreview() {
 // ── RATING ──
 function setRating(n) {
   currentRating = n;
-  document.querySelectorAll('.star').forEach(s => {
-    s.classList.toggle('active', parseInt(s.dataset.v) <= n);
-  });
+  document.querySelectorAll('.star').forEach(s => s.classList.toggle('active', parseInt(s.dataset.v) <= n));
 }
 
 // ── ADD BOOK ──
@@ -1210,6 +530,7 @@ function addBook() {
   currentBook.rating = currentRating;
   currentBook.note = document.getElementById('note-input').value.trim();
   library.unshift(currentBook);
+  syncToSupabase(currentBook);
   saveLibrary();
   hidePreview();
   document.getElementById('isbn-input').value = '';
@@ -1228,52 +549,28 @@ function filterBooks(genre, btn) {
 function renderLibrary() {
   const sortVal = document.querySelector('.sort-select')?.value || 'date';
   let books = [...library];
-  if (currentFilter !== 'all') {
-    books = books.filter(b => b.genre === currentFilter);
-  }
+  if (currentFilter !== 'all') books = books.filter(b => b.genre === currentFilter);
   books.sort((a, b) => {
     if (sortVal === 'title') return a.title.localeCompare(b.title);
     if (sortVal === 'author') return a.author.localeCompare(b.author);
     if (sortVal === 'rating') return b.rating - a.rating;
-    return 0; // date = already newest first
+    return 0;
   });
-
-  // Genre filter chips
   const genres = [...new Set(library.map(b => b.genre))];
   const filterRow = document.getElementById('filter-row');
   filterRow.innerHTML = `<button class="filter-chip ${currentFilter==='all'?'active':''}" onclick="filterBooks('all', this)">Tous</button>`;
-  genres.forEach(g => {
-    filterRow.innerHTML += `<button class="filter-chip ${currentFilter===g?'active':''}" onclick="filterBooks('${g}', this)">${g}</button>`;
-  });
-
+  genres.forEach(g => { filterRow.innerHTML += `<button class="filter-chip ${currentFilter===g?'active':''}" onclick="filterBooks('${g}', this)">${g}</button>`; });
   const grid = document.getElementById('books-grid');
   document.getElementById('book-count').textContent = books.length + ' livre' + (books.length !== 1 ? 's' : '');
-
   if (!books.length) {
-    grid.innerHTML = `<div class="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <p>${currentFilter === 'all' ? 'Ta bibliothèque est vide,<br>scanne ton premier livre !' : 'Aucun livre dans ce genre.'}</p>
-    </div>`;
+    grid.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>${currentFilter === 'all' ? 'Ta bibliothèque est vide,<br>scanne ton premier livre !' : 'Aucun livre dans ce genre.'}</p></div>`;
     return;
   }
-
-  grid.innerHTML = books.map((b, i) => {
+  grid.innerHTML = books.map(b => {
     const realIdx = library.indexOf(b);
     const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) : '☆☆☆☆☆';
-    const coverHtml = b.cover
-      ? `<img class="card-cover" src="${b.cover}" onerror="this.style.display='none'">`
-      : `<div class="card-cover-ph">📚</div>`;
-    return `<div class="book-card" onclick="openModal(${realIdx})">
-      ${coverHtml}
-      <div class="card-info">
-        <div class="card-title">${b.title}</div>
-        <div class="card-author">${b.author}</div>
-        <div class="card-stars" style="color:var(--gold)">${stars}</div>
-        <span class="card-genre">${b.genre}</span>
-        ${b.note ? `<div class="card-note">"${b.note}"</div>` : ''}
-      </div>
-      <div class="card-date">${b.addedAt}</div>
-    </div>`;
+    const coverHtml = b.cover ? `<img class="card-cover" src="${b.cover}" onerror="this.style.display='none'">` : `<div class="card-cover-ph">📚</div>`;
+    return `<div class="book-card" onclick="openModal(${realIdx})">${coverHtml}<div class="card-info"><div class="card-title">${b.title}</div><div class="card-author">${b.author}</div><div class="card-stars" style="color:var(--gold)">${stars}</div><span class="card-genre">${b.genre}</span>${b.note ? `<div class="card-note">"${b.note}"</div>` : ''}</div><div class="card-date">${b.addedAt}</div></div>`;
   }).join('');
 }
 
@@ -1290,23 +587,18 @@ function openModal(idx) {
   document.getElementById('modal-desc').textContent = b.description;
   document.getElementById('modal-note-text').textContent = b.note || 'Aucune note personnelle.';
   const wrap = document.getElementById('modal-cover-wrap');
-  if (b.cover) {
-    wrap.innerHTML = `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">`;
-  } else {
-    wrap.innerHTML = `<div class="modal-cover-ph">📚</div>`;
-  }
+  wrap.innerHTML = b.cover ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">` : `<div class="modal-cover-ph">📚</div>`;
   document.getElementById('modal-bg').classList.add('open');
 }
 
 function closeModal(e) {
-  if (!e || e.target === document.getElementById('modal-bg')) {
-    document.getElementById('modal-bg').classList.remove('open');
-  }
+  if (!e || e.target === document.getElementById('modal-bg')) document.getElementById('modal-bg').classList.remove('open');
 }
 
 function deleteCurrentBook() {
   if (activeModalIdx === null) return;
   const b = library[activeModalIdx];
+  deleteFromSupabase(b.isbn);
   library.splice(activeModalIdx, 1);
   saveLibrary();
   closeModal();
@@ -1330,67 +622,19 @@ function renderStats() {
   const avg = rated.length ? (rated.reduce((s,b) => s + b.rating, 0) / rated.length).toFixed(1) : '—';
   document.getElementById('stat-avg').textContent = avg;
   document.getElementById('stat-authors').textContent = new Set(library.map(b => b.author)).size;
-
   const genreCount = {};
   library.forEach(b => { genreCount[b.genre] = (genreCount[b.genre] || 0) + 1; });
   const genres = Object.entries(genreCount).sort((a,b) => b[1]-a[1]);
   document.getElementById('stat-genres').textContent = genres.length;
-
   const max = genres[0]?.[1] || 1;
   document.getElementById('genres-bars').innerHTML = genres.map(([g, c]) =>
-    `<div class="genre-bar-row">
-      <div class="genre-bar-label"><span>${g}</span><span>${c} livre${c>1?'s':''}</span></div>
-      <div class="genre-bar-track"><div class="genre-bar-fill" style="width:${Math.round(c/max*100)}%"></div></div>
-    </div>`
+    `<div class="genre-bar-row"><div class="genre-bar-label"><span>${g}</span><span>${c} livre${c>1?'s':''}</span></div><div class="genre-bar-track"><div class="genre-bar-fill" style="width:${Math.round(c/max*100)}%"></div></div></div>`
   ).join('');
 }
 
 // ── HELPERS ──
 function showLoader(on) { document.getElementById('loader').classList.toggle('active', on); }
-function saveLibrary() {
-  localStorage.setItem('library', JSON.stringify(library));
-  syncToGist();
-}
-
-async function syncToGist() {
-  try {
-    await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        files: {
-          'bibliotheque.json': {
-            content: JSON.stringify({ livres: library }, null, 2)
-          }
-        }
-      })
-    });
-  } catch(e) {
-    console.log('Sync Gist échouée', e);
-  }
-}
-
-async function loadFromGist() {
-  try {
-    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-      headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
-    });
-    const data = await res.json();
-    const content = data.files['bibliotheque.json']?.content;
-    if (content) {
-      const parsed = JSON.parse(content);
-      if (parsed.livres?.length > 0) {
-        library = parsed.livres;
-        localStorage.setItem('library', JSON.stringify(library));
-      }
-    }
-  } catch(e) {
-    console.log('Chargement Gist échoué, utilisation localStorage', e);
-  }
-}
+function saveLibrary() { localStorage.setItem('library', JSON.stringify(library)); }
 function updateHeaderStats() {
   const n = library.length;
   document.getElementById('header-stats').textContent = n + ' livre' + (n !== 1 ? 's' : '');
@@ -1402,16 +646,79 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
+// ── SUPABASE SYNC ──
+async function syncToSupabase(book) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/Livres`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        isbn: book.isbn,
+        title: book.title,
+        author: book.author,
+        genre: book.genre,
+        description: book.description,
+        cover: book.cover,
+        rating: book.rating,
+        note: book.note,
+        year: book.year,
+        pages: book.pages,
+        added_at: book.addedAt
+      })
+    });
+  } catch(e) { console.log('Sync Supabase échouée', e); }
+}
+
+async function deleteFromSupabase(isbn) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/Livres?isbn=eq.${isbn}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+  } catch(e) { console.log('Suppression Supabase échouée', e); }
+}
+
+async function loadFromSupabase() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/Livres?select=*&order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) {
+      library = data.map(b => ({
+        id: b.id,
+        isbn: b.isbn,
+        title: b.title,
+        author: b.author,
+        genre: b.genre,
+        description: b.description,
+        cover: b.cover,
+        rating: b.rating,
+        note: b.note,
+        year: b.year,
+        pages: b.pages,
+        addedAt: b.added_at
+      }));
+      localStorage.setItem('library', JSON.stringify(library));
+    }
+  } catch(e) { console.log('Chargement Supabase échoué, utilisation localStorage', e); }
+}
+
 // ── EXPORT / IMPORT ──
 function exportJSON() {
   if (!library.length) { toast('Aucun livre à exporter'); return; }
-  const data = {
-    export_date: new Date().toISOString(),
-    app: 'Ma Bibliothèque',
-    version: '1.0',
-    total: library.length,
-    livres: library
-  };
+  const data = { export_date: new Date().toISOString(), app: 'Ma Bibliothèque', version: '1.0', total: library.length, livres: library };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1422,23 +729,16 @@ function exportJSON() {
   const now = new Date().toLocaleString('fr-FR');
   localStorage.setItem('lastBackup', now);
   updateBackupLabel();
-  toast('✓ JSON exporté — sauvegarde dans iCloud Drive !');
+  toast('✓ JSON exporté !');
 }
 
 function exportCSV() {
   if (!library.length) { toast('Aucun livre à exporter'); return; }
   const headers = ['ISBN','Titre','Auteur','Genre','Note','Commentaire','Éditeur','Année','Pages','Ajouté le'];
   const rows = library.map(b => [
-    b.isbn || '',
-    (b.title || '').replace(/"/g,'""'),
-    (b.author || '').replace(/"/g,'""'),
-    (b.genre || '').replace(/"/g,'""'),
-    b.rating || '',
-    (b.note || '').replace(/"/g,'""'),
-    (b.publisher || '').replace(/"/g,'""'),
-    b.year || '',
-    b.pages || '',
-    b.addedAt || ''
+    b.isbn || '', (b.title||'').replace(/"/g,'""'), (b.author||'').replace(/"/g,'""'),
+    (b.genre||'').replace(/"/g,'""'), b.rating||'', (b.note||'').replace(/"/g,'""'),
+    (b.publisher||'').replace(/"/g,'""'), b.year||'', b.pages||'', b.addedAt||''
   ].map(v => `"${v}"`).join(','));
   const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1448,7 +748,7 @@ function exportCSV() {
   a.download = 'ma-bibliotheque-' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
   URL.revokeObjectURL(url);
-  toast('✓ CSV exporté — ouvre dans Excel ou Google Sheets !');
+  toast('✓ CSV exporté !');
 }
 
 function importJSON(event) {
@@ -1473,10 +773,8 @@ function importJSON(event) {
       updateHeaderStats();
       renderLibrary();
       renderStats();
-      toast('✓ ' + added + ' livre(s) importé(s) avec succès !');
-    } catch(err) {
-      toast('Erreur : fichier JSON corrompu ou invalide');
-    }
+      toast('✓ ' + added + ' livre(s) importé(s) !');
+    } catch(err) { toast('Erreur : fichier JSON invalide'); }
   };
   reader.readAsText(file);
   event.target.value = '';
@@ -1485,14 +783,10 @@ function importJSON(event) {
 function updateBackupLabel() {
   const last = localStorage.getItem('lastBackup');
   const el = document.getElementById('last-backup-label');
-  if (el) el.textContent = last ? 'Dernière sauvegarde JSON : ' + last : 'Aucune sauvegarde enregistrée';
+  if (el) el.textContent = last ? 'Dernière export JSON : ' + last : 'Données synchronisées sur Supabase';
 }
 
-// ISBN input → enter key
-document.getElementById('isbn-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') searchByISBN();
-});
-
+document.getElementById('isbn-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchByISBN(); });
 updateBackupLabel();
 </script>
 </body>
