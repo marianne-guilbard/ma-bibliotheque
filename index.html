@@ -218,6 +218,16 @@
   .last-backup { font-size: 0.72rem; color: var(--ink-muted); text-align: center; margin-top: 10px; font-style: italic; }
   .safety-badge { display: flex; align-items: center; gap: 8px; background: #E8F4E8; border-radius: 10px; padding: 10px 12px; margin-top: 12px; font-size: 0.78rem; color: #2E7D32; line-height: 1.4; }
 
+  .search-result-item { display: flex; gap: 12px; padding: 12px 14px; cursor: pointer; border-bottom: 1px solid var(--cream-dark); transition: background .15s; align-items: center; }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:active { background: var(--cream); }
+  .search-result-thumb { width: 36px; height: 54px; border-radius: 4px; object-fit: cover; background: var(--cream-dark); flex-shrink: 0; }
+  .search-result-thumb-ph { width: 36px; height: 54px; border-radius: 4px; background: var(--cream-dark); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .search-result-info { flex: 1; min-width: 0; }
+  .search-result-title { font-family: var(--font-display); font-size: 0.85rem; line-height: 1.2; margin-bottom: 2px; }
+  .search-result-author { font-size: 0.75rem; color: var(--accent); font-weight: 500; }
+  .search-result-year { font-size: 0.7rem; color: var(--ink-muted); margin-top: 2px; }
+
   .install-banner { background: var(--accent-light); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 0.78rem; color: var(--accent); line-height: 1.4; }
   .install-banner svg { flex-shrink: 0; margin-top: 2px; }
   .install-close { margin-left: auto; background: none; border: none; color: var(--accent); cursor: pointer; font-size: 1rem; padding: 0 0 0 8px; }
@@ -273,8 +283,10 @@
     <button class="isbn-btn" onclick="searchByISBN()">→</button>
   </div>
   <div class="isbn-row" style="margin-top:8px">
-    <input class="isbn-input" id="title-input" type="text" placeholder="Rechercher par titre…">
+    <input class="isbn-input" id="title-input" type="text" placeholder="Titre ou auteur…">
     <button class="isbn-btn" onclick="searchByTitle()">→</button>
+  </div>
+    <div id="search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; box-shadow:0 2px 16px var(--shadow); overflow:hidden;">
   </div>
 
   <div class="loader" id="loader"><div class="spinner"></div>Recherche en cours…</div>
@@ -499,52 +511,87 @@ function searchByISBN() {
 }
 
 async function searchByTitle() {
-  const title = document.getElementById('title-input').value.trim();
-  if (!title || title.length < 2) { toast('Saisis au moins 2 caractères'); return; }
+  const query = document.getElementById('title-input').value.trim();
+  if (!query || query.length < 2) { toast('Saisis au moins 2 caractères'); return; }
   showLoader(true);
   hidePreview();
+  hideSearchResults();
   try {
-    const res = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+    const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=6`);
     const data = await res.json();
-    const searchBook = data.docs?.[0];
-    if (!searchBook) { toast('Livre non trouvé'); showLoader(false); return; }
-
-    let description = 'Pas de résumé disponible.';
-    if (searchBook.key) {
-      try {
-        const workRes = await fetch(`https://openlibrary.org${searchBook.key}.json`);
-        const workData = await workRes.json();
-        if (workData.description) {
-          const raw = typeof workData.description === 'string'
-           ? workData.description
-          : workData.description.value || description;
-        description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
-        }
-      } catch(e) {}
-    }
-
-    currentBook = {
-      id: Date.now(),
-      isbn: searchBook.isbn?.[0] || '',
-      title: searchBook.title || 'Titre inconnu',
-      author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
-      genre: searchBook.subject?.[0] || 'Général',
-      description,
-      cover: searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null,
-      publisher: searchBook.publisher?.[0] || '',
-      year: searchBook.first_publish_year?.toString() || '',
-      pages: searchBook.number_of_pages_median || null,
-      language: '',
-      rating: 0,
-      note: '',
-      addedAt: new Date().toLocaleDateString('fr-FR')
-    };
+    const results = data.docs?.filter(b => b.title && b.author_name) || [];
+    if (!results.length) { toast('Aucun résultat trouvé'); showLoader(false); return; }
     showLoader(false);
-    displayPreview(currentBook);
+    displaySearchResults(results);
   } catch(e) {
     showLoader(false);
     toast('Erreur de connexion. Vérifie internet.');
   }
+}
+
+function displaySearchResults(results) {
+  const container = document.getElementById('search-results');
+  container.style.display = 'block';
+  container.innerHTML = results.map((b, i) => {
+    const cover = b.cover_i
+      ? `<img class="search-result-thumb" src="https://covers.openlibrary.org/b/id/${b.cover_i}-S.jpg" onerror="this.style.display='none'">`
+      : `<div class="search-result-thumb-ph">📚</div>`;
+    return `<div class="search-result-item" onclick="selectSearchResult(${i})">
+      ${cover}
+      <div class="search-result-info">
+        <div class="search-result-title">${b.title}</div>
+        <div class="search-result-author">${b.author_name?.[0] || 'Auteur inconnu'}</div>
+        <div class="search-result-year">${b.first_publish_year || ''} ${b.publisher?.[0] ? '· ' + b.publisher[0] : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  window._searchResults = results;
+}
+
+async function selectSearchResult(idx) {
+  const searchBook = window._searchResults[idx];
+  hideSearchResults();
+  showLoader(true);
+  hidePreview();
+
+  let description = 'Pas de résumé disponible.';
+  if (searchBook.key) {
+    try {
+      const workRes = await fetch(`https://openlibrary.org${searchBook.key}.json`);
+      const workData = await workRes.json();
+      if (workData.description) {
+        const raw = typeof workData.description === 'string'
+          ? workData.description
+          : workData.description.value || description;
+        description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
+      }
+    } catch(e) {}
+  }
+
+  currentBook = {
+    id: Date.now(),
+    isbn: searchBook.isbn?.[0] || '',
+    title: searchBook.title || 'Titre inconnu',
+    author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
+    genre: searchBook.subject?.[0] || 'Général',
+    description,
+    cover: searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null,
+    publisher: searchBook.publisher?.[0] || '',
+    year: searchBook.first_publish_year?.toString() || '',
+    pages: searchBook.number_of_pages_median || null,
+    language: '',
+    rating: 0,
+    note: '',
+    addedAt: new Date().toLocaleDateString('fr-FR')
+  };
+  showLoader(false);
+  displayPreview(currentBook);
+}
+
+function hideSearchResults() {
+  const container = document.getElementById('search-results');
+  container.style.display = 'none';
+  container.innerHTML = '';
 }
 
 async function fetchBook(isbn) {
