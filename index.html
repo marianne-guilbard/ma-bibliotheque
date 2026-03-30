@@ -686,23 +686,110 @@ function hideSearchResults() {
   container.innerHTML = '';
 }
 
+async function fetchFromBnF(query, isISBN = false) {
+  try {
+    const bnfQuery = isISBN
+      ? `bib.isbn+all+"${query}"`
+      : `bib.title+all+"${encodeURIComponent(query)}"`;
+
+    const res = await fetch(`https://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve&query=${bnfQuery}&maximumRecords=6&recordSchema=unimarcxchange`);
+    const text = await res.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, 'text/xml');
+    const records = xml.querySelectorAll('record');
+
+    if (!records.length) {
+      toast('Livre non trouvé dans aucune base de données');
+      showLoader(false);
+      return;
+    }
+
+    const results = [];
+    records.forEach(record => {
+      const getField = (tag, sub) => {
+        const el = record.querySelector(`datafield[tag="${tag}"] subfield[code="${sub}"]`);
+        return el ? el.textContent.trim() : '';
+      };
+      const getAllFields = (tag, sub) => {
+        const els = record.querySelectorAll(`datafield[tag="${tag}"] subfield[code="${sub}"]`);
+        return Array.from(els).map(e => e.textContent.trim());
+      };
+
+      const title = getField('200', 'a') || getField('200', 'e') || '';
+      const author = getField('700', 'a') + (getField('700', 'b') ? ' ' + getField('700', 'b') : '')
+        || getField('701', 'a') || '';
+      const isbn = getField('010', 'a').replace(/[^0-9X]/g, '') || '';
+      const publisher = getField('210', 'c') || getField('214', 'c') || '';
+      const year = getField('210', 'd') || getField('214', 'd') || '';
+      const subjects = getAllFields('610', 'a').concat(getAllFields('606', 'a'));
+
+      if (!title) return;
+
+      results.push({
+        title,
+        author_name: author ? [author] : ['Auteur inconnu'],
+        isbn: isbn ? [isbn] : [],
+        publisher: publisher ? [publisher] : [],
+        first_publish_year: year.replace(/[^0-9]/g, '').slice(0, 4),
+        subject: subjects,
+        cover_i: null,
+        cover_url: isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : null,
+        key: null,
+        _source: 'bnf',
+        _raw: { title, author, isbn, publisher, year, subjects }
+      });
+    });
+
+    if (!results.length) {
+      toast('Livre non trouvé dans aucune base de données');
+      showLoader(false);
+      return;
+    }
+
+    if (results.length === 1 || isISBN) {
+      const b = results[0];
+      currentBook = {
+        id: Date.now(),
+        isbn: b.isbn[0] || '',
+        title: b.title,
+        author: b.author_name[0] || 'Auteur inconnu',
+        genre: detectGenre(b.subject, b.title, b.author_name[0]),
+        description: 'Pas de résumé disponible.',
+        cover: b.cover_url,
+        publisher: b.publisher[0] || '',
+        year: b.first_publish_year || '',
+        pages: null,
+        language: 'fr',
+        rating: 0,
+        note: '',
+        addedAt: new Date().toLocaleDateString('fr-FR')
+      };
+      showLoader(false);
+      displayPreview(currentBook);
+    } else {
+      showLoader(false);
+      displaySearchResults(results);
+    }
+  } catch(e) {
+    toast('Erreur BnF. Vérifie internet.');
+    showLoader(false);
+  }
+}
+
 async function fetchFromGoogleBooks(query) {
   try {
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&langRestrict=fr`);
     const data = await res.json();
     if (!data.items || !data.items.length) {
-      // Essai sans restriction de langue
       const res2 = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
       const data2 = await res2.json();
       if (!data2.items || !data2.items.length) {
-        toast('Livre non trouvé — essaie avec le titre en anglais');
-        showLoader(false);
+        await fetchFromBnF(query, query.startsWith('isbn:'));
         return;
       }
       data.items = data2.items;
     }
 
-    // Si un seul résultat ou recherche ISBN → affiche direct
     if (data.items.length === 1 || query.startsWith('isbn:')) {
       const info = data.items[0].volumeInfo;
       const cover = info.imageLinks
@@ -727,7 +814,6 @@ async function fetchFromGoogleBooks(query) {
       showLoader(false);
       displayPreview(currentBook);
     } else {
-      // Plusieurs résultats → affiche la liste
       const results = data.items.map(item => {
         const info = item.volumeInfo;
         return {
@@ -768,8 +854,13 @@ async function fetchBook(isbn) {
     const searchBook = searchData.docs?.[0];
 
     if (!book && !searchBook) {
-      // Fallback Google Books
-      await fetchFromGoogleBooks(`isbn:${isbn}`);
+      const googleRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+      const googleData = await googleRes.json();
+      if (googleData.items?.length) {
+        await fetchFromGoogleBooks(`isbn:${isbn}`);
+      } else {
+        await fetchFromBnF(isbn, true);
+      }
       return;
     }
 
