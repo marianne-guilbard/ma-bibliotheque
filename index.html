@@ -111,7 +111,7 @@
   .sort-label { font-size: 0.75rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
   .sort-select { padding: 5px 10px; border-radius: 8px; border: 1.5px solid var(--cream-dark); background: var(--white); font-family: var(--font-body); font-size: 0.8rem; color: var(--ink); outline: none; }
 
- .books-grid {
+.books-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
@@ -125,23 +125,19 @@
     box-shadow: none;
     cursor: pointer;
     transition: transform .15s;
-    position: relative;
     overflow: visible;
   }
   .book-card:active { transform: scale(0.95); }
   .book-card::before { display: none; }
   .card-cover-wrap {
     width: 100%;
-    height: 160px !important;
-    min-height: 160px !important;
-    max-height: 160px !important;
+    padding-bottom: 150%;
     border-radius: 6px;
-    overflow: hidden !important;
+    overflow: hidden;
     box-shadow: 2px 4px 12px var(--shadow);
     margin-bottom: 6px;
     background: var(--cream-dark);
     flex-shrink: 0;
-    display: block;
     position: relative;
   }
   .card-cover {
@@ -151,7 +147,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center top;
+    object-position: center;
     display: block;
   }
   .card-cover-ph {
