@@ -1055,7 +1055,7 @@
 <script>
 // ── STATE ──
 const GITHUB_TOKEN = localStorage.getItem('gh_token') || '';
-const GIST_ID = 'https://gist.github.com/marianne-guilbard/7992bb8960da5a48f30ad804f2dc962b';
+const GIST_ID = localStorage.getItem('gist_id') || '';
 let library = JSON.parse(localStorage.getItem('library') || '[]');
 let currentBook = null;
 let currentRating = 0;
