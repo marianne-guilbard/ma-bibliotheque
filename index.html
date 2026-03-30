@@ -573,7 +573,7 @@ async function selectSearchResult(idx) {
     isbn: searchBook.isbn?.[0] || '',
     title: searchBook.title || 'Titre inconnu',
     author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
-    genre: searchBook.subject?.[0] || 'Général',
+    genre: detectGenre(searchBook.subject),
     description,
     cover: searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null,
     publisher: searchBook.publisher?.[0] || '',
@@ -586,6 +586,45 @@ async function selectSearchResult(idx) {
   };
   showLoader(false);
   displayPreview(currentBook);
+}
+
+function detectGenre(subjects) {
+  if (!subjects || !subjects.length) return 'Général';
+
+  const map = {
+    'Roman': ['fiction', 'novel', 'roman', 'littérature', 'literature', 'literary'],
+    'Policier': ['detective', 'mystery', 'crime', 'thriller', 'policier', 'suspense'],
+    'Science-fiction': ['science fiction', 'sci-fi', 'space', 'futuristic', 'dystopia', 'dystopie'],
+    'Fantasy': ['fantasy', 'magic', 'wizard', 'dragon', 'fantastique', 'heroic'],
+    'Biographie': ['biography', 'autobiography', 'memoir', 'biographie', 'mémoires'],
+    'Histoire': ['history', 'historical', 'histoire', 'war', 'guerre', 'civilization'],
+    'Philosophie': ['philosophy', 'philosophie', 'ethics', 'éthique', 'absurd'],
+    'Sciences': ['science', 'physics', 'biology', 'chemistry', 'mathematics', 'physique'],
+    'Développement personnel': ['self-help', 'personal development', 'motivation', 'leadership'],
+    'Économie': ['economics', 'economy', 'finance', 'business', 'économie'],
+    'Psychologie': ['psychology', 'psychologie', 'mental', 'behavior', 'comportement'],
+    'Art': ['art', 'painting', 'photography', 'design', 'architecture'],
+    'Cuisine': ['cooking', 'cuisine', 'recipe', 'food', 'gastronomie'],
+    'Voyage': ['travel', 'voyage', 'geography', 'géographie', 'exploration'],
+    'Jeunesse': ['children', 'juvenile', 'young adult', 'jeunesse', 'youth'],
+    'Poésie': ['poetry', 'poésie', 'poems', 'verse'],
+    'Théâtre': ['drama', 'theater', 'theatre', 'play', 'pièce'],
+    'Bande dessinée': ['comics', 'graphic novel', 'manga', 'bande dessinée'],
+    'Religion': ['religion', 'spirituality', 'christianity', 'islam', 'buddhism'],
+    'Politique': ['politics', 'political', 'politique', 'government', 'democracy'],
+  };
+
+  const subjectsLower = subjects.map(s => s.toLowerCase());
+  for (const [genre, keywords] of Object.entries(map)) {
+    for (const subject of subjectsLower) {
+      for (const keyword of keywords) {
+        if (subject.includes(keyword)) return genre;
+      }
+    }
+  }
+
+  const first = subjects[0];
+  return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
 }
 
 function hideSearchResults() {
@@ -633,7 +672,7 @@ async function fetchBook(isbn) {
       isbn,
       title: book?.title || searchBook?.title || 'Titre inconnu',
       author: book?.authors?.map(a => a.name).join(', ') || searchBook?.author_name?.join(', ') || 'Auteur inconnu',
-      genre: book?.subjects?.[0]?.name || searchBook?.subject?.[0] || 'Général',
+      genre: detectGenre(book?.subjects?.map(s => s.name) || searchBook?.subject),
       description,
       cover: book?.cover?.large || book?.cover?.medium || (searchBook?.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
       publisher: book?.publishers?.[0]?.name || searchBook?.publisher?.[0] || '',
