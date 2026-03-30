@@ -454,9 +454,10 @@ async function searchByTitle() {
         const workRes = await fetch(`https://openlibrary.org${searchBook.key}.json`);
         const workData = await workRes.json();
         if (workData.description) {
-          description = typeof workData.description === 'string'
-            ? workData.description
-            : workData.description.value || description;
+          const raw = typeof workData.description === 'string'
+           ? workData.description
+          : workData.description.value || description;
+        description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
         }
       } catch(e) {}
     }
