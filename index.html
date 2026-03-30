@@ -751,6 +751,8 @@ function addBook() {
   saveLibrary();
   hidePreview();
   document.getElementById('isbn-input').value = '';
+  document.getElementById('title-input').value = '';
+  hideSearchResults();
   updateHeaderStats();
   toast('✓ ' + currentBook.title + ' ajouté !');
 }
