@@ -132,24 +132,34 @@
   .book-card::before { display: none; }
   .card-cover-wrap {
     width: 100%;
-    height: 160px;
+    height: 160px !important;
+    min-height: 160px !important;
+    max-height: 160px !important;
     border-radius: 6px;
-    overflow: hidden;
+    overflow: hidden !important;
     box-shadow: 2px 4px 12px var(--shadow);
     margin-bottom: 6px;
     background: var(--cream-dark);
     flex-shrink: 0;
+    display: block;
+    position: relative;
   }
   .card-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 160px;
+    height: 100%;
     object-fit: cover;
     object-position: center top;
     display: block;
   }
   .card-cover-ph {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 160px;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
