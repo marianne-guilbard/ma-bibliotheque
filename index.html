@@ -487,7 +487,6 @@ let authMode = 'login';
 
 // ── INIT AU CHARGEMENT ──
 window.addEventListener('load', function() {
-  // Init Supabase après chargement complet
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // Event listeners auth
@@ -501,16 +500,16 @@ window.addEventListener('load', function() {
   document.getElementById('title-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') searchByTitle(); });
 
   updateBackupLabel();
-  initAuth();
 
-   // Gestion partage
-  document.getElementById('share-btn').addEventListener('click', shareLibrary);
-
-  // Vérifie si on est en mode lecture seule
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUserId = urlParams.get('user');
+
   if (sharedUserId) {
+    // Mode lecture seule — pas besoin de connexion
     loadSharedLibrary(sharedUserId);
+  } else {
+    // Mode normal — connexion requise
+    initAuth();
   }
 });
 
