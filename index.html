@@ -32,11 +32,53 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: var(--font-body); background: var(--cream); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
 
+  /* ── AUTH PAGE ── */
+  .auth-page {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px calc(40px + var(--safe-bottom));
+    background: var(--ink);
+  }
+  .auth-page.active { display: flex; }
+  .auth-logo {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .auth-logo span { color: var(--accent); font-style: italic; }
+  .auth-tagline { font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 40px; text-align: center; letter-spacing: 0.04em; }
+  .auth-card { background: var(--white); border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+  .auth-tabs { display: flex; gap: 0; margin-bottom: 24px; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--cream-dark); }
+  .auth-tab { flex: 1; padding: 10px; background: transparent; border: none; font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; color: var(--ink-muted); transition: all .2s; }
+  .auth-tab.active { background: var(--ink); color: var(--cream); }
+  .auth-label { font-size: 0.75rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: block; }
+  .auth-input { width: 100%; padding: 13px 14px; border-radius: 10px; border: 1.5px solid var(--cream-dark); background: var(--cream); font-family: var(--font-body); font-size: 0.9rem; color: var(--ink); outline: none; transition: border-color .2s; margin-bottom: 14px; }
+  .auth-input:focus { border-color: var(--accent); }
+  .auth-btn { width: 100%; padding: 14px; border-radius: 10px; border: none; background: var(--accent); color: var(--white); font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all .2s; margin-top: 4px; }
+  .auth-btn:active { background: #A8431F; transform: scale(0.98); }
+  .auth-error { font-size: 0.8rem; color: #C0392B; background: #FCEAEA; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: none; }
+  .auth-error.show { display: block; }
+  .auth-success { font-size: 0.8rem; color: #2E7D32; background: #E8F4E8; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: none; }
+  .auth-success.show { display: block; }
+
+  /* ── MAIN APP ── */
+  .app { display: none; }
+  .app.active { display: block; }
+
   .header { background: var(--ink); color: var(--cream); padding: calc(16px + var(--safe-top)) 20px 16px; position: sticky; top: 0; z-index: 100; }
   .header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 480px; margin: 0 auto; }
   .header h1 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; letter-spacing: 0.02em; }
   .header h1 span { color: var(--accent); font-style: italic; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
   .header-stats { font-size: 0.72rem; color: var(--ink-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .logout-btn { background: none; border: none; color: var(--ink-muted); font-size: 0.72rem; cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-body); transition: color .2s; }
+  .logout-btn:hover { color: var(--accent); }
 
   .tabs { display: flex; background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08); max-width: 480px; margin: 0 auto; }
   .tab-btn { flex: 1; padding: 10px 4px; background: none; border: none; color: var(--ink-muted); font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: color .2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
@@ -117,17 +159,7 @@
   .book-card { background: transparent; border-radius: 0; padding: 0; display: flex; flex-direction: column; box-shadow: none; cursor: pointer; transition: transform .15s; overflow: visible; }
   .book-card:active { transform: scale(0.95); }
   .book-card::before { display: none; }
-  .card-cover-wrap {
-    width: 100%;
-    padding-top: 150%;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 2px 4px 12px var(--shadow);
-    margin-bottom: 6px;
-    background: var(--cream-dark);
-    flex-shrink: 0;
-    position: relative;
-  }
+  .card-cover-wrap { width: 100%; padding-top: 150%; border-radius: 6px; overflow: hidden; box-shadow: 2px 4px 12px var(--shadow); margin-bottom: 6px; background: var(--cream-dark); flex-shrink: 0; position: relative; }
   .card-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
   .card-cover-ph { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--ink-muted); font-size: 2rem; }
   .card-info { flex: 1; }
@@ -206,158 +238,177 @@
   .search-result-title { font-family: var(--font-display); font-size: 0.85rem; line-height: 1.2; margin-bottom: 2px; }
   .search-result-author { font-size: 0.75rem; color: var(--accent); font-weight: 500; }
   .search-result-year { font-size: 0.7rem; color: var(--ink-muted); margin-top: 2px; }
-
-  .install-banner { background: var(--accent-light); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 0.78rem; color: var(--accent); line-height: 1.4; }
-  .install-banner svg { flex-shrink: 0; margin-top: 2px; }
-  .install-close { margin-left: auto; background: none; border: none; color: var(--accent); cursor: pointer; font-size: 1rem; padding: 0 0 0 8px; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-inner">
-    <h1>Ma <span>Bibliothèque</span></h1>
-    <div class="header-stats" id="header-stats">0 livre</div>
-  </div>
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showPage('scan')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
-      Scanner
-    </button>
-    <button class="tab-btn" onclick="showPage('library')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Livres
-    </button>
-    <button class="tab-btn" onclick="showPage('stats')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
-      Stats
-    </button>
+<!-- ── AUTH PAGE ── -->
+<div class="auth-page active" id="auth-page">
+  <div class="auth-logo">Ma <span>Bibliothèque</span></div>
+  <div class="auth-tagline">Ta bibliothèque personnelle, partout</div>
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Se connecter</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">S'inscrire</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div id="auth-success" class="auth-success"></div>
+    <label class="auth-label">Email</label>
+    <input class="auth-input" id="auth-email" type="email" placeholder="ton@email.com" autocomplete="email">
+    <label class="auth-label">Mot de passe</label>
+    <input class="auth-input" id="auth-password" type="password" placeholder="••••••••" autocomplete="current-password">
+    <div id="auth-name-wrap" style="display:none">
+      <label class="auth-label">Prénom (optionnel)</label>
+      <input class="auth-input" id="auth-name" type="text" placeholder="Ton prénom">
+    </div>
+    <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Se connecter</button>
   </div>
 </div>
 
-<!-- ── SCAN PAGE ── -->
-<div class="page active" id="page-scan">
-  <div id="install-banner" class="install-banner">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16.5"/></svg>
-    <span>📱 Sur iPhone, appuie sur <b>Partager</b> puis <b>Ajouter à l'écran d'accueil</b> pour l'utiliser comme une vraie app !</span>
-    <button class="install-close" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
-  </div>
-
-  <div class="scan-area" id="scan-area">
-    <video id="scanner-video" autoplay playsinline muted></video>
-    <div class="scan-overlay" id="scan-overlay">
-      <div class="scan-frame"><span></span><div class="scan-line"></div></div>
+<!-- ── MAIN APP ── -->
+<div class="app" id="main-app">
+  <div class="header">
+    <div class="header-inner">
+      <h1>Ma <span>Bibliothèque</span></h1>
+      <div class="header-right">
+        <div class="header-stats" id="header-stats">0 livre</div>
+        <button class="logout-btn" onclick="handleLogout()">Déconnexion</button>
+      </div>
     </div>
-    <div class="scan-placeholder" id="scan-placeholder">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9V5a2 2 0 0 1 2-2h4"/><path d="M3 15v4a2 2 0 0 0 2 2h4"/><path d="M21 9V5a2 2 0 0 0-2-2h-4"/><path d="M21 15v4a2 2 0 0 1-2 2h-4"/><line x1="7" y1="12" x2="7" y2="12.5"/><line x1="10" y1="9" x2="10" y2="15"/><line x1="13" y1="12" x2="13" y2="12.5"/><line x1="16" y1="9" x2="16" y2="15"/></svg>
-      <span style="font-size:0.82rem">Appuie pour scanner un code-barres</span>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showPage('scan')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+        Scanner
+      </button>
+      <button class="tab-btn" onclick="showPage('library')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Livres
+      </button>
+      <button class="tab-btn" onclick="showPage('stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+        Stats
+      </button>
     </div>
   </div>
 
-  <button class="btn btn-primary" id="scan-btn" onclick="startScanner()">📷 Scanner un code-barres</button>
-  <button class="btn btn-secondary" id="stop-btn" style="display:none" onclick="stopScanner()">✕ Arrêter le scanner</button>
+  <!-- ── SCAN PAGE ── -->
+  <div class="page active" id="page-scan">
+    <div class="scan-area" id="scan-area">
+      <video id="scanner-video" autoplay playsinline muted></video>
+      <div class="scan-overlay" id="scan-overlay">
+        <div class="scan-frame"><span></span><div class="scan-line"></div></div>
+      </div>
+      <div class="scan-placeholder" id="scan-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9V5a2 2 0 0 1 2-2h4"/><path d="M3 15v4a2 2 0 0 0 2 2h4"/><path d="M21 9V5a2 2 0 0 0-2-2h-4"/><path d="M21 15v4a2 2 0 0 1-2 2h-4"/><line x1="7" y1="12" x2="7" y2="12.5"/><line x1="10" y1="9" x2="10" y2="15"/><line x1="13" y1="12" x2="13" y2="12.5"/><line x1="16" y1="9" x2="16" y2="15"/></svg>
+        <span style="font-size:0.82rem">Appuie pour scanner un code-barres</span>
+      </div>
+    </div>
 
-  <div class="isbn-row">
-    <input class="isbn-input" id="isbn-input" type="text" inputmode="numeric" placeholder="Saisir ISBN manuellement…" maxlength="17">
-    <button class="isbn-btn" onclick="searchByISBN()">→</button>
-  </div>
-  <div class="isbn-row" style="margin-top:8px">
-    <input class="isbn-input" id="title-input" type="text" placeholder="Titre ou auteur…">
-    <button class="isbn-btn" onclick="searchByTitle()">→</button>
-  </div>
-  <div id="search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; box-shadow:0 2px 16px var(--shadow); overflow:hidden;"></div>
+    <button class="btn btn-primary" id="scan-btn" onclick="startScanner()">📷 Scanner un code-barres</button>
+    <button class="btn btn-secondary" id="stop-btn" style="display:none" onclick="stopScanner()">✕ Arrêter le scanner</button>
 
-  <div class="loader" id="loader"><div class="spinner"></div>Recherche en cours…</div>
+    <div class="isbn-row">
+      <input class="isbn-input" id="isbn-input" type="text" inputmode="numeric" placeholder="Saisir ISBN manuellement…" maxlength="17">
+      <button class="isbn-btn" onclick="searchByISBN()">→</button>
+    </div>
+    <div class="isbn-row" style="margin-top:8px">
+      <input class="isbn-input" id="title-input" type="text" placeholder="Titre ou auteur…">
+      <button class="isbn-btn" onclick="searchByTitle()">→</button>
+    </div>
+    <div id="search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; box-shadow:0 2px 16px var(--shadow); overflow:hidden;"></div>
 
-  <div class="book-preview" id="book-preview">
-    <div class="preview-top">
-      <div id="preview-cover-wrap"></div>
-      <div class="preview-info">
-        <div class="preview-title" id="prev-title">—</div>
-        <div class="preview-author" id="prev-author">—</div>
-        <div class="preview-genre" id="prev-genre">—</div>
-        <div id="cover-url-wrap" style="display:none; margin-top:8px;">
-          <input class="isbn-input" id="cover-url-input" type="url" placeholder="Coller URL image…" style="font-size:0.75rem; padding:8px 10px;">
-          <button class="isbn-btn" onclick="applyCoverUrl()" style="padding:8px 12px; margin-top:6px; width:100%; border-radius:8px; font-size:0.75rem;">Appliquer</button>
+    <div class="loader" id="loader"><div class="spinner"></div>Recherche en cours…</div>
+
+    <div class="book-preview" id="book-preview">
+      <div class="preview-top">
+        <div id="preview-cover-wrap"></div>
+        <div class="preview-info">
+          <div class="preview-title" id="prev-title">—</div>
+          <div class="preview-author" id="prev-author">—</div>
+          <div class="preview-genre" id="prev-genre">—</div>
+          <div id="cover-url-wrap" style="display:none; margin-top:8px;">
+            <input class="isbn-input" id="cover-url-input" type="url" placeholder="Coller URL image…" style="font-size:0.75rem; padding:8px 10px;">
+            <button class="isbn-btn" onclick="applyCoverUrl()" style="padding:8px 12px; margin-top:6px; width:100%; border-radius:8px; font-size:0.75rem;">Appliquer</button>
+          </div>
+          <button id="add-cover-btn" onclick="toggleCoverInput()" style="margin-top:8px; background:none; border:none; color:var(--accent); font-size:0.72rem; cursor:pointer; padding:0; font-family:var(--font-body);">🖼 Ajouter une image</button>
         </div>
-        <button id="add-cover-btn" onclick="toggleCoverInput()" style="margin-top:8px; background:none; border:none; color:var(--accent); font-size:0.72rem; cursor:pointer; padding:0; font-family:var(--font-body);">🖼 Ajouter une image</button>
       </div>
-    </div>
-    <div class="preview-desc clamped" id="prev-desc">—</div>
-    <span class="read-more" id="read-more-btn" style="display:none" onclick="toggleDesc()">Lire la suite ↓</span>
-    <div class="rating-row">
-      <span class="rating-label">Ma note</span>
-      <div class="stars" id="stars">
-        <span class="star" data-v="1" onclick="setRating(1)">★</span>
-        <span class="star" data-v="2" onclick="setRating(2)">★</span>
-        <span class="star" data-v="3" onclick="setRating(3)">★</span>
-        <span class="star" data-v="4" onclick="setRating(4)">★</span>
-        <span class="star" data-v="5" onclick="setRating(5)">★</span>
+      <div class="preview-desc clamped" id="prev-desc">—</div>
+      <span class="read-more" id="read-more-btn" style="display:none" onclick="toggleDesc()">Lire la suite ↓</span>
+      <div class="rating-row">
+        <span class="rating-label">Ma note</span>
+        <div class="stars" id="stars">
+          <span class="star" data-v="1" onclick="setRating(1)">★</span>
+          <span class="star" data-v="2" onclick="setRating(2)">★</span>
+          <span class="star" data-v="3" onclick="setRating(3)">★</span>
+          <span class="star" data-v="4" onclick="setRating(4)">★</span>
+          <span class="star" data-v="5" onclick="setRating(5)">★</span>
+        </div>
       </div>
+      <textarea class="note-area" id="note-input" placeholder="Ajouter une note personnelle…"></textarea>
+      <button class="btn btn-primary" onclick="addBook()">Ajouter à ma bibliothèque</button>
     </div>
-    <textarea class="note-area" id="note-input" placeholder="Ajouter une note personnelle…"></textarea>
-    <button class="btn btn-primary" onclick="addBook()">Ajouter à ma bibliothèque</button>
   </div>
-</div>
 
-<!-- ── LIBRARY PAGE ── -->
-<div class="page" id="page-library">
-  <div class="library-header">
-    <div class="library-title">Mes livres</div>
-    <div class="book-count" id="book-count">—</div>
-  </div>
-  <div class="filter-row" id="filter-row">
-    <button class="filter-chip active" onclick="filterBooks('all', this)">Tous</button>
-  </div>
-  <div class="sort-row">
-    <span class="sort-label">Trier par</span>
-    <select class="sort-select" onchange="renderLibrary()">
-      <option value="date">Date ajout</option>
-      <option value="title">Titre</option>
-      <option value="author">Auteur</option>
-      <option value="rating">Note</option>
-    </select>
-  </div>
-  <div class="books-grid" id="books-grid"></div>
-</div>
-
-<!-- ── STATS PAGE ── -->
-<div class="page" id="page-stats">
-  <div class="stats-title">Statistiques</div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">Livres lus</div></div>
-    <div class="stat-card"><div class="stat-number" id="stat-avg">—</div><div class="stat-label">Note moyenne</div></div>
-    <div class="stat-card"><div class="stat-number" id="stat-authors">0</div><div class="stat-label">Auteurs différents</div></div>
-    <div class="stat-card"><div class="stat-number" id="stat-genres">0</div><div class="stat-label">Genres</div></div>
-  </div>
-  <div class="genres-list" id="genres-chart">
-    <div class="genres-title">Répartition par genre</div>
-    <div id="genres-bars"></div>
-  </div>
-  <div class="data-section">
-    <div class="data-section-title">Mes données — Sauvegardes</div>
-    <div class="data-actions">
-      <button class="btn-export" onclick="exportJSON()">
-        <div class="export-icon icon-json">📄</div>
-        <div class="export-text"><div class="export-label">Exporter en JSON</div><div class="export-desc">Format complet · réimportable · universel</div></div>
-        <span style="color:var(--ink-muted);font-size:0.8rem">↓</span>
-      </button>
-      <button class="btn-export" onclick="exportCSV()">
-        <div class="export-icon icon-csv">📊</div>
-        <div class="export-text"><div class="export-label">Exporter en CSV</div><div class="export-desc">Ouvrir dans Excel, Notion, Google Sheets…</div></div>
-        <span style="color:var(--ink-muted);font-size:0.8rem">↓</span>
-      </button>
-      <button class="btn-export" onclick="document.getElementById('import-file').click()">
-        <div class="export-icon icon-import">📥</div>
-        <div class="export-text"><div class="export-label">Importer un JSON</div><div class="export-desc">Restaurer depuis une sauvegarde précédente</div></div>
-        <span style="color:var(--ink-muted);font-size:0.8rem">↑</span>
-      </button>
-      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+  <!-- ── LIBRARY PAGE ── -->
+  <div class="page" id="page-library">
+    <div class="library-header">
+      <div class="library-title">Mes livres</div>
+      <div class="book-count" id="book-count">—</div>
     </div>
-    <div class="last-backup" id="last-backup-label">Données synchronisées sur Supabase</div>
-    <div class="safety-badge">
-      <span style="font-size:1rem">☁️</span>
-      <span>Tes données sont synchronisées automatiquement sur <b>Supabase</b> à chaque ajout ou suppression.</span>
+    <div class="filter-row" id="filter-row">
+      <button class="filter-chip active" onclick="filterBooks('all', this)">Tous</button>
+    </div>
+    <div class="sort-row">
+      <span class="sort-label">Trier par</span>
+      <select class="sort-select" onchange="renderLibrary()">
+        <option value="date">Date ajout</option>
+        <option value="title">Titre</option>
+        <option value="author">Auteur</option>
+        <option value="rating">Note</option>
+      </select>
+    </div>
+    <div class="books-grid" id="books-grid"></div>
+  </div>
+
+  <!-- ── STATS PAGE ── -->
+  <div class="page" id="page-stats">
+    <div class="stats-title">Statistiques</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">Livres lus</div></div>
+      <div class="stat-card"><div class="stat-number" id="stat-avg">—</div><div class="stat-label">Note moyenne</div></div>
+      <div class="stat-card"><div class="stat-number" id="stat-authors">0</div><div class="stat-label">Auteurs différents</div></div>
+      <div class="stat-card"><div class="stat-number" id="stat-genres">0</div><div class="stat-label">Genres</div></div>
+    </div>
+    <div class="genres-list" id="genres-chart">
+      <div class="genres-title">Répartition par genre</div>
+      <div id="genres-bars"></div>
+    </div>
+    <div class="data-section">
+      <div class="data-section-title">Mes données — Sauvegardes</div>
+      <div class="data-actions">
+        <button class="btn-export" onclick="exportJSON()">
+          <div class="export-icon icon-json">📄</div>
+          <div class="export-text"><div class="export-label">Exporter en JSON</div><div class="export-desc">Format complet · réimportable · universel</div></div>
+          <span style="color:var(--ink-muted);font-size:0.8rem">↓</span>
+        </button>
+        <button class="btn-export" onclick="exportCSV()">
+          <div class="export-icon icon-csv">📊</div>
+          <div class="export-text"><div class="export-label">Exporter en CSV</div><div class="export-desc">Ouvrir dans Excel, Notion, Google Sheets…</div></div>
+          <span style="color:var(--ink-muted);font-size:0.8rem">↓</span>
+        </button>
+        <button class="btn-export" onclick="document.getElementById('import-file').click()">
+          <div class="export-icon icon-import">📥</div>
+          <div class="export-text"><div class="export-label">Importer un JSON</div><div class="export-desc">Restaurer depuis une sauvegarde précédente</div></div>
+          <span style="color:var(--ink-muted);font-size:0.8rem">↑</span>
+        </button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+      </div>
+      <div class="last-backup" id="last-backup-label">Données synchronisées sur Supabase</div>
+      <div class="safety-badge">
+        <span style="font-size:1rem">☁️</span>
+        <span>Tes données sont synchronisées automatiquement sur <b>Supabase</b>.</span>
+      </div>
     </div>
   </div>
 </div>
@@ -416,25 +467,100 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/@zxing/library@0.19.3/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://ziiefhonxqbxipsjmqun.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppaWVmaG9ueHFieGlwc2ptcXVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MDMxNDEsImV4cCI6MjA5MDQ3OTE0MX0.x0wHnAmFxAV3T8m8O6Ps-Rik8OUXGPMcAFKC1Gb_9HU';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let library = JSON.parse(localStorage.getItem('library') || '[]');
+let library = [];
 let currentBook = null;
 let currentRating = 0;
 let currentFilter = 'all';
 let activeModalIdx = null;
 let codeReader = null;
 let scanning = false;
+let currentUser = null;
+let authMode = 'login';
 
-loadFromSupabase().then(() => {
-  updateHeaderStats();
-  renderLibrary();
-  renderStats();
-  updateBackupLabel();
-});
+// ── AUTH ──
+async function initAuth() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    showApp();
+  } else {
+    showAuthPage();
+  }
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      currentUser = session.user;
+      showApp();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      library = [];
+      showAuthPage();
+    }
+  });
+}
 
+function showApp() {
+  document.getElementById('auth-page').classList.remove('active');
+  document.getElementById('main-app').classList.add('active');
+  loadFromSupabase();
+}
+
+function showAuthPage() {
+  document.getElementById('auth-page').classList.add('active');
+  document.getElementById('main-app').classList.remove('active');
+}
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (mode === 'login' && i === 0) || (mode === 'signup' && i === 1));
+  });
+  document.getElementById('auth-name-wrap').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Se connecter' : "S'inscrire";
+  document.getElementById('auth-error').classList.remove('show');
+  document.getElementById('auth-success').classList.remove('show');
+}
+
+async function handleAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  const successEl = document.getElementById('auth-success');
+  errEl.classList.remove('show');
+  successEl.classList.remove('show');
+
+  if (!email || !password) { errEl.textContent = 'Email et mot de passe requis'; errEl.classList.add('show'); return; }
+  if (password.length < 6) { errEl.textContent = 'Le mot de passe doit faire au moins 6 caractères'; errEl.classList.add('show'); return; }
+
+  const btn = document.getElementById('auth-submit-btn');
+  btn.textContent = 'Chargement…';
+  btn.disabled = true;
+
+  if (authMode === 'login') {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) { errEl.textContent = error.message === 'Invalid login credentials' ? 'Email ou mot de passe incorrect' : error.message; errEl.classList.add('show'); }
+  } else {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) { errEl.textContent = error.message; errEl.classList.add('show'); }
+    else { successEl.textContent = '✓ Compte créé ! Vérifie ton email pour confirmer, puis connecte-toi.'; successEl.classList.add('show'); switchAuthTab('login'); }
+  }
+
+  btn.textContent = authMode === 'login' ? 'Se connecter' : "S'inscrire";
+  btn.disabled = false;
+}
+
+async function handleLogout() {
+  await supabase.auth.signOut();
+  library = [];
+  toast('À bientôt !');
+}
+
+// ── NAVIGATION ──
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -446,6 +572,7 @@ function showPage(id) {
   if (id !== 'scan' && scanning) stopScanner();
 }
 
+// ── SCANNER ──
 async function startScanner() {
   if (typeof ZXing === 'undefined') { toast('Scanner non disponible, utilise la saisie manuelle'); return; }
   try {
@@ -488,60 +615,37 @@ function searchByISBN() {
   fetchBook(isbn);
 }
 
-// ── FLUX RECHERCHE PAR TITRE : Google Books → Open Library → BnF → Inventaire ──
+// ── RECHERCHE TITRE : Google Books → Open Library → BnF → Inventaire ──
 async function searchByTitle() {
   const query = document.getElementById('title-input').value.trim();
   if (!query || query.length < 2) { toast('Saisis au moins 2 caractères'); return; }
-  showLoader(true);
-  hidePreview();
-  hideSearchResults();
+  showLoader(true); hidePreview(); hideSearchResults();
   try {
-    // 1. Google Books en premier (couvertures modernes)
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&orderBy=relevance`);
     const data = await res.json();
     if (data.items?.length) {
-      const results = data.items
-        .filter(item => item.volumeInfo?.title && item.volumeInfo?.authors)
-        .map(item => {
-          const info = item.volumeInfo;
-          return {
-            title: info.title,
-            author_name: info.authors || [],
-            cover_i: null,
-            cover_url: info.imageLinks ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || '').replace('http://', 'https://').replace('zoom=1', 'zoom=2') : null,
-            first_publish_year: info.publishedDate?.slice(0,4) || '',
-            publisher: info.publisher ? [info.publisher] : [],
-            subject: info.categories || [],
-            isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''],
-            key: null,
-            _source: 'google',
-            _raw: info
-          };
-        });
+      const results = data.items.filter(item => item.volumeInfo?.title && item.volumeInfo?.authors).map(item => {
+        const info = item.volumeInfo;
+        return { title: info.title, author_name: info.authors || [], cover_i: null, cover_url: info.imageLinks ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || '').replace('http://', 'https://').replace('zoom=1', 'zoom=2') : null, first_publish_year: info.publishedDate?.slice(0,4) || '', publisher: info.publisher ? [info.publisher] : [], subject: info.categories || [], isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''], key: null, _source: 'google', _raw: info };
+      });
       if (results.length) { showLoader(false); displaySearchResults(results); return; }
     }
-    // 2. Open Library
     const olRes = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20&sort=new`);
     const olData = await olRes.json();
     let olResults = olData.docs?.filter(b => b.title && b.author_name) || [];
     const withCover = olResults.filter(b => b.cover_i);
-    const withoutCover = olResults.filter(b => !b.cover_i);
-    olResults = [...withCover, ...withoutCover].slice(0, 6);
+    olResults = [...withCover, ...olResults.filter(b => !b.cover_i)].slice(0, 6);
     if (olResults.length) { showLoader(false); displaySearchResults(olResults); return; }
-    // 3. BnF
-    const bnfFound = await fetchFromBnF(query, false, true);
+    const bnfFound = await fetchFromBnF(query, false);
     if (bnfFound) return;
-    // 4. Inventaire
     await fetchFromInventaire(query);
   } catch(e) { showLoader(false); toast('Erreur de connexion. Vérifie internet.'); }
 }
 
-// ── FLUX RECHERCHE PAR ISBN : Open Library → Google Books → BnF → Inventaire ──
+// ── RECHERCHE ISBN : Open Library → Google Books → BnF → Inventaire ──
 async function fetchBook(isbn) {
-  showLoader(true);
-  hidePreview();
+  showLoader(true); hidePreview();
   try {
-    // 1. Open Library
     const [olRes, searchRes] = await Promise.all([
       fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`),
       fetch(`https://openlibrary.org/search.json?isbn=${isbn}`)
@@ -551,20 +655,15 @@ async function fetchBook(isbn) {
     const key = `ISBN:${isbn}`;
     const book = olData[key];
     const searchBook = searchData.docs?.[0];
-
     if (!book && !searchBook) {
-      // 2. Google Books
       const googleRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
       const googleData = await googleRes.json();
       if (googleData.items?.length) { await fetchFromGoogleBooks(`isbn:${isbn}`); return; }
-      // 3. BnF
-      const bnfFound = await fetchFromBnF(isbn, true, false);
+      const bnfFound = await fetchFromBnF(isbn, true);
       if (bnfFound) return;
-      // 4. Inventaire
       await fetchFromInventaire(isbn);
       return;
     }
-
     let description = 'Pas de résumé disponible.';
     const workKey = searchBook?.key;
     if (workKey) {
@@ -577,7 +676,6 @@ async function fetchBook(isbn) {
         }
       } catch(e) {}
     }
-
     currentBook = {
       id: Date.now(), isbn,
       title: book?.title || searchBook?.title || 'Titre inconnu',
@@ -590,12 +688,10 @@ async function fetchBook(isbn) {
       pages: book?.number_of_pages || searchBook?.number_of_pages_median || null,
       language: '', rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
     };
-    showLoader(false);
-    displayPreview(currentBook);
+    showLoader(false); displayPreview(currentBook);
   } catch(e) { showLoader(false); toast('Erreur de connexion. Vérifie internet.'); }
 }
 
-// ── GOOGLE BOOKS ──
 async function fetchFromGoogleBooks(query) {
   try {
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&langRestrict=fr`);
@@ -604,7 +700,7 @@ async function fetchFromGoogleBooks(query) {
       const res2 = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
       const data2 = await res2.json();
       if (!data2.items || !data2.items.length) {
-        const bnfFound = await fetchFromBnF(query.replace('isbn:',''), query.startsWith('isbn:'), false);
+        const bnfFound = await fetchFromBnF(query.replace('isbn:',''), query.startsWith('isbn:'));
         if (!bnfFound) await fetchFromInventaire(query.replace('isbn:',''));
         return;
       }
@@ -614,41 +710,24 @@ async function fetchFromGoogleBooks(query) {
       const info = data.items[0].volumeInfo;
       const cover = info.imageLinks ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null) : null;
       currentBook = {
-        id: Date.now(),
-        isbn: info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || '',
-        title: info.title || 'Titre inconnu',
-        author: (info.authors || ['Auteur inconnu']).join(', '),
+        id: Date.now(), isbn: info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || '',
+        title: info.title || 'Titre inconnu', author: (info.authors || ['Auteur inconnu']).join(', '),
         genre: detectGenre(info.categories, info.title, info.authors?.[0]),
         description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
         cover: cover ? cover.replace('http://', 'https://') : null,
-        publisher: info.publisher || '',
-        year: info.publishedDate ? info.publishedDate.slice(0,4) : '',
+        publisher: info.publisher || '', year: info.publishedDate ? info.publishedDate.slice(0,4) : '',
         pages: info.pageCount || null, language: info.language || '',
         rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
       };
-      showLoader(false);
-      displayPreview(currentBook);
+      showLoader(false); displayPreview(currentBook);
     } else {
-      const results = data.items.map(item => {
-        const info = item.volumeInfo;
-        return {
-          title: info.title, author_name: info.authors || [], cover_i: null,
-          cover_url: info.imageLinks?.thumbnail?.replace('http://', 'https://') || null,
-          first_publish_year: info.publishedDate?.slice(0,4) || '',
-          publisher: info.publisher ? [info.publisher] : [],
-          subject: info.categories || [],
-          isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''],
-          key: null, _source: 'google', _raw: info
-        };
-      });
-      showLoader(false);
-      displaySearchResults(results);
+      const results = data.items.map(item => { const info = item.volumeInfo; return { title: info.title, author_name: info.authors || [], cover_i: null, cover_url: info.imageLinks?.thumbnail?.replace('http://', 'https://') || null, first_publish_year: info.publishedDate?.slice(0,4) || '', publisher: info.publisher ? [info.publisher] : [], subject: info.categories || [], isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''], key: null, _source: 'google', _raw: info }; });
+      showLoader(false); displaySearchResults(results);
     }
   } catch(e) { showLoader(false); toast('Erreur de connexion. Vérifie internet.'); }
 }
 
-// ── BnF — retourne true si trouvé, false sinon ──
-async function fetchFromBnF(query, isISBN = false, returnResults = false) {
+async function fetchFromBnF(query, isISBN = false) {
   try {
     const bnfQuery = isISBN ? `bib.isbn+all+"${query}"` : `bib.title+all+"${query}"`;
     const res = await fetch(`https://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve&query=${bnfQuery}&maximumRecords=6&recordSchema=unimarcxchange`);
@@ -657,12 +736,10 @@ async function fetchFromBnF(query, isISBN = false, returnResults = false) {
     const xml = parser.parseFromString(text, 'text/xml');
     const records = xml.querySelectorAll('record');
     if (!records.length) return false;
-
-    const results = [];
-    const seen = new Set();
+    const results = []; const seen = new Set();
     records.forEach(record => {
       const getField = (tag, sub) => { const el = record.querySelector(`datafield[tag="${tag}"] subfield[code="${sub}"]`); return el ? el.textContent.trim() : ''; };
-      const getAllFields = (tag, sub) => { const els = record.querySelectorAll(`datafield[tag="${tag}"] subfield[code="${sub}"]`); return Array.from(els).map(e => e.textContent.trim()); };
+      const getAllFields = (tag, sub) => { return Array.from(record.querySelectorAll(`datafield[tag="${tag}"] subfield[code="${sub}"]`)).map(e => e.textContent.trim()); };
       const title = getField('200', 'a') || '';
       const subtitle = getField('200', 'e') || '';
       const fullTitle = subtitle ? `${title} : ${subtitle}` : title;
@@ -673,60 +750,34 @@ async function fetchFromBnF(query, isISBN = false, returnResults = false) {
       const publisher = getField('210', 'c') || getField('214', 'c') || '';
       const year = (getField('210', 'd') || getField('214', 'd') || '').replace(/[^0-9]/g, '').slice(0, 4);
       const subjects = getAllFields('610', 'a').concat(getAllFields('606', 'a'));
-      if (!title || seen.has(title)) return;
-      seen.add(title);
+      if (!title || seen.has(title)) return; seen.add(title);
       results.push({ title: fullTitle, author_name: author ? [author] : ['Auteur inconnu'], isbn: isbn ? [isbn] : [], publisher: publisher ? [publisher] : [], first_publish_year: year, subject: subjects, cover_i: null, cover_url: null, key: null, _source: 'bnf', _isbn: isbn, _raw: { title: fullTitle, author, isbn, publisher, year, subjects } });
     });
-
     if (!results.length) return false;
-
-    // Enrichit avec Google Books (couverture + résumé)
     for (const b of results) {
       if (b._isbn) {
         try {
           const gRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${b._isbn}&maxResults=1`);
           const gData = await gRes.json();
-          if (gData.items?.[0]?.volumeInfo?.imageLinks) {
-            const links = gData.items[0].volumeInfo.imageLinks;
-            b.cover_url = (links.extraLarge || links.large || links.medium || links.thumbnail || '').replace('http://', 'https://');
-          }
-          if (!b._raw.description && gData.items?.[0]?.volumeInfo?.description) {
-            b._raw.description = gData.items[0].volumeInfo.description;
-          }
+          if (gData.items?.[0]?.volumeInfo?.imageLinks) { const links = gData.items[0].volumeInfo.imageLinks; b.cover_url = (links.extraLarge || links.large || links.medium || links.thumbnail || '').replace('http://', 'https://'); }
+          if (!b._raw.description && gData.items?.[0]?.volumeInfo?.description) { b._raw.description = gData.items[0].volumeInfo.description; }
         } catch(e) {}
       }
     }
-
     if (results.length === 1 || isISBN) {
       const b = results[0];
-      currentBook = {
-        id: Date.now(), isbn: b._isbn || '', title: b.title,
-        author: b.author_name[0] || 'Auteur inconnu',
-        genre: detectGenre(b.subject, b.title, b.author_name[0]),
-        description: b._raw.description || 'Pas de résumé disponible.',
-        cover: b.cover_url || null, publisher: b.publisher[0] || '',
-        year: b.first_publish_year || '', pages: null, language: 'fr',
-        rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
-      };
-      showLoader(false);
-      displayPreview(currentBook);
-      return true;
-    } else {
-      showLoader(false);
-      displaySearchResults(results);
-      return true;
-    }
+      currentBook = { id: Date.now(), isbn: b._isbn || '', title: b.title, author: b.author_name[0] || 'Auteur inconnu', genre: detectGenre(b.subject, b.title, b.author_name[0]), description: b._raw.description || 'Pas de résumé disponible.', cover: b.cover_url || null, publisher: b.publisher[0] || '', year: b.first_publish_year || '', pages: null, language: 'fr', rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR') };
+      showLoader(false); displayPreview(currentBook); return true;
+    } else { showLoader(false); displaySearchResults(results); return true; }
   } catch(e) { return false; }
 }
 
-// ── INVENTAIRE ──
 async function fetchFromInventaire(query) {
   try {
     const res = await fetch(`https://inventaire.io/api/search?types=works&search=${encodeURIComponent(query)}&lang=fr`);
     const data = await res.json();
     const results = data.results?.filter(b => b.label && b.type === 'works') || [];
     if (!results.length) { toast('Livre non trouvé dans aucune base de données'); showLoader(false); return; }
-
     const enriched = await Promise.all(results.slice(0, 6).map(async b => {
       try {
         const detailRes = await fetch(`https://inventaire.io/api/entities?action=by-uris&uris=${b.uri}&lang=fr`);
@@ -736,39 +787,18 @@ async function fetchFromInventaire(query) {
         const isbn = claims['wdt:P212']?.[0] || claims['wdt:P957']?.[0] || '';
         const authorUri = claims['wdt:P50']?.[0] || '';
         let author = 'Auteur inconnu';
-        if (authorUri) {
-          try {
-            const aRes = await fetch(`https://inventaire.io/api/entities?action=by-uris&uris=${authorUri}&lang=fr`);
-            const aData = await aRes.json();
-            author = aData.entities?.[authorUri]?.labels?.fr || aData.entities?.[authorUri]?.labels?.en || 'Auteur inconnu';
-          } catch(e) {}
-        }
+        if (authorUri) { try { const aRes = await fetch(`https://inventaire.io/api/entities?action=by-uris&uris=${authorUri}&lang=fr`); const aData = await aRes.json(); author = aData.entities?.[authorUri]?.labels?.fr || aData.entities?.[authorUri]?.labels?.en || 'Auteur inconnu'; } catch(e) {} }
         const description = entity?.descriptions?.fr || entity?.descriptions?.en || 'Pas de résumé disponible.';
         const cover = b.image ? `https://inventaire.io${b.image}` : null;
         const year = claims['wdt:P577']?.[0]?.slice(0, 4) || claims['wdt:P571']?.[0]?.slice(0, 4) || '';
         return { title: b.label, author_name: [author], isbn: isbn ? [isbn] : [], publisher: [], first_publish_year: year, subject: [], cover_i: null, cover_url: cover, key: null, _source: 'inventaire', _raw: { title: b.label, author, isbn, description, year } };
-      } catch(e) {
-        return { title: b.label, author_name: ['Auteur inconnu'], isbn: [], cover_url: b.image ? `https://inventaire.io${b.image}` : null, first_publish_year: '', subject: [], _source: 'inventaire', _raw: { title: b.label, description: 'Pas de résumé disponible.' } };
-      }
+      } catch(e) { return { title: b.label, author_name: ['Auteur inconnu'], isbn: [], cover_url: b.image ? `https://inventaire.io${b.image}` : null, first_publish_year: '', subject: [], _source: 'inventaire', _raw: { title: b.label, description: 'Pas de résumé disponible.' } }; }
     }));
-
     if (enriched.length === 1) {
       const b = enriched[0];
-      currentBook = {
-        id: Date.now(), isbn: b.isbn?.[0] || '', title: b.title,
-        author: b.author_name[0] || 'Auteur inconnu',
-        genre: detectGenre(b.subject, b.title, b.author_name[0]),
-        description: b._raw.description || 'Pas de résumé disponible.',
-        cover: b.cover_url || null, publisher: b.publisher?.[0] || '',
-        year: b.first_publish_year || '', pages: null, language: 'fr',
-        rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
-      };
-      showLoader(false);
-      displayPreview(currentBook);
-    } else {
-      showLoader(false);
-      displaySearchResults(enriched);
-    }
+      currentBook = { id: Date.now(), isbn: b.isbn?.[0] || '', title: b.title, author: b.author_name[0] || 'Auteur inconnu', genre: detectGenre(b.subject, b.title, b.author_name[0]), description: b._raw.description || 'Pas de résumé disponible.', cover: b.cover_url || null, publisher: b.publisher?.[0] || '', year: b.first_publish_year || '', pages: null, language: 'fr', rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR') };
+      showLoader(false); displayPreview(currentBook);
+    } else { showLoader(false); displaySearchResults(enriched); }
   } catch(e) { toast('Livre non trouvé dans aucune base de données'); showLoader(false); }
 }
 
@@ -778,91 +808,34 @@ function displaySearchResults(results) {
   container.innerHTML = results.map((b, i) => {
     const coverUrl = b.cover_url || (b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-S.jpg` : null);
     const cover = coverUrl ? `<img class="search-result-thumb" src="${coverUrl}" onerror="this.style.display='none'">` : `<div class="search-result-thumb-ph">📚</div>`;
-    return `<div class="search-result-item" onclick="selectSearchResult(${i})">
-      ${cover}
-      <div class="search-result-info">
-        <div class="search-result-title">${b.title}</div>
-        <div class="search-result-author">${b.author_name?.[0] || 'Auteur inconnu'}</div>
-        <div class="search-result-year">${b.first_publish_year || ''} ${b.publisher?.[0] ? '· ' + b.publisher[0] : ''}</div>
-      </div>
-    </div>`;
+    return `<div class="search-result-item" onclick="selectSearchResult(${i})">${cover}<div class="search-result-info"><div class="search-result-title">${b.title}</div><div class="search-result-author">${b.author_name?.[0] || 'Auteur inconnu'}</div><div class="search-result-year">${b.first_publish_year || ''} ${b.publisher?.[0] ? '· ' + b.publisher[0] : ''}</div></div></div>`;
   }).join('');
   window._searchResults = results;
 }
 
 async function selectSearchResult(idx) {
   const searchBook = window._searchResults[idx];
-  hideSearchResults();
-  showLoader(true);
-  hidePreview();
-
+  hideSearchResults(); showLoader(true); hidePreview();
   if (searchBook._source === 'google') {
     const info = searchBook._raw;
     const cover = info.imageLinks ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null) : null;
-    currentBook = {
-      id: Date.now(), isbn: searchBook.isbn?.[0] || '',
-      title: info.title || 'Titre inconnu',
-      author: (info.authors || ['Auteur inconnu']).join(', '),
-      genre: detectGenre(info.categories, info.title, info.authors?.[0]),
-      description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
-      cover: cover ? cover.replace('http://', 'https://') : null,
-      publisher: info.publisher || '', year: info.publishedDate?.slice(0,4) || '',
-      pages: info.pageCount || null, language: info.language || '',
-      rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
-    };
+    currentBook = { id: Date.now(), isbn: searchBook.isbn?.[0] || '', title: info.title || 'Titre inconnu', author: (info.authors || ['Auteur inconnu']).join(', '), genre: detectGenre(info.categories, info.title, info.authors?.[0]), description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.', cover: cover ? cover.replace('http://', 'https://') : null, publisher: info.publisher || '', year: info.publishedDate?.slice(0,4) || '', pages: info.pageCount || null, language: info.language || '', rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR') };
     showLoader(false); displayPreview(currentBook); return;
   }
-
-  if (searchBook._source === 'inventaire') {
-    currentBook = {
-      id: Date.now(), isbn: searchBook.isbn?.[0] || '',
-      title: searchBook.title, author: searchBook.author_name?.[0] || 'Auteur inconnu',
-      genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
-      description: searchBook._raw?.description || 'Pas de résumé disponible.',
-      cover: searchBook.cover_url || null, publisher: searchBook.publisher?.[0] || '',
-      year: searchBook.first_publish_year || '', pages: null, language: 'fr',
-      rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
-    };
+  if (searchBook._source === 'inventaire' || searchBook._source === 'bnf') {
+    currentBook = { id: Date.now(), isbn: searchBook.isbn?.[0] || searchBook._isbn || '', title: searchBook.title, author: searchBook.author_name?.[0] || 'Auteur inconnu', genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]), description: searchBook._raw?.description || 'Pas de résumé disponible.', cover: searchBook.cover_url || null, publisher: searchBook.publisher?.[0] || '', year: searchBook.first_publish_year || '', pages: null, language: 'fr', rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR') };
     showLoader(false); displayPreview(currentBook); return;
   }
-
-  if (searchBook._source === 'bnf') {
-    currentBook = {
-      id: Date.now(), isbn: searchBook._isbn || '',
-      title: searchBook.title, author: searchBook.author_name?.[0] || 'Auteur inconnu',
-      genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
-      description: searchBook._raw?.description || 'Pas de résumé disponible.',
-      cover: searchBook.cover_url || null, publisher: searchBook.publisher?.[0] || '',
-      year: searchBook.first_publish_year || '', pages: null, language: 'fr',
-      rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
-    };
-    showLoader(false); displayPreview(currentBook); return;
-  }
-
-  // Open Library
   let description = 'Pas de résumé disponible.';
   if (searchBook.key) {
     try {
       const workRes = await fetch(`https://openlibrary.org${searchBook.key}.json`);
       const workData = await workRes.json();
-      if (workData.description) {
-        const raw = typeof workData.description === 'string' ? workData.description : workData.description.value || description;
-        description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
-      }
+      if (workData.description) { const raw = typeof workData.description === 'string' ? workData.description : workData.description.value || description; description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim(); }
     } catch(e) {}
   }
-  currentBook = {
-    id: Date.now(), isbn: searchBook.isbn?.[0] || '',
-    title: searchBook.title || 'Titre inconnu',
-    author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
-    genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
-    description, cover: searchBook.cover_url || (searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
-    publisher: searchBook.publisher?.[0] || '', year: searchBook.first_publish_year?.toString() || '',
-    pages: searchBook.number_of_pages_median || null, language: '',
-    rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
-  };
-  showLoader(false);
-  displayPreview(currentBook);
+  currentBook = { id: Date.now(), isbn: searchBook.isbn?.[0] || '', title: searchBook.title || 'Titre inconnu', author: searchBook.author_name?.join(', ') || 'Auteur inconnu', genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]), description, cover: searchBook.cover_url || (searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null), publisher: searchBook.publisher?.[0] || '', year: searchBook.first_publish_year?.toString() || '', pages: searchBook.number_of_pages_median || null, language: '', rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR') };
+  showLoader(false); displayPreview(currentBook);
 }
 
 function detectGenre(subjects, title, author) {
@@ -890,27 +863,17 @@ function detectGenre(subjects, title, author) {
   if (subjects && subjects.length) {
     const subjectsLower = subjects.map(s => s.toLowerCase());
     for (const [genre, keywords] of Object.entries(map)) {
-      for (const subject of subjectsLower) {
-        for (const keyword of keywords) {
-          if (subject.includes(keyword)) return genre;
-        }
-      }
+      for (const subject of subjectsLower) { for (const keyword of keywords) { if (subject.includes(keyword)) return genre; } }
     }
     const first = subjects[0];
     return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
   }
   const text = ((title || '') + ' ' + (author || '')).toLowerCase();
-  for (const [genre, keywords] of Object.entries(map)) {
-    for (const keyword of keywords) { if (text.includes(keyword)) return genre; }
-  }
+  for (const [genre, keywords] of Object.entries(map)) { for (const keyword of keywords) { if (text.includes(keyword)) return genre; } }
   return 'Roman';
 }
 
-function hideSearchResults() {
-  const container = document.getElementById('search-results');
-  container.style.display = 'none';
-  container.innerHTML = '';
-}
+function hideSearchResults() { const c = document.getElementById('search-results'); c.style.display = 'none'; c.innerHTML = ''; }
 
 function displayPreview(book) {
   document.getElementById('prev-title').textContent = book.title;
@@ -941,11 +904,9 @@ function toggleCoverInput() {
 
 function applyCoverUrl() {
   const url = document.getElementById('cover-url-input').value.trim();
-  if (!url) { toast('Colle une URL d\'image valide'); return; }
-  if (!currentBook) return;
+  if (!url || !currentBook) { toast('Colle une URL d\'image valide'); return; }
   currentBook.cover = url;
-  const wrap = document.getElementById('preview-cover-wrap');
-  wrap.innerHTML = `<img class="cover-img" src="${url}" onerror="toast('Image non accessible'); this.style.display='none'">`;
+  document.getElementById('preview-cover-wrap').innerHTML = `<img class="cover-img" src="${url}" onerror="toast('Image non accessible'); this.style.display='none'">`;
   document.getElementById('cover-url-wrap').style.display = 'none';
   document.getElementById('add-cover-btn').textContent = '🖼 Changer l\'image';
   document.getElementById('cover-url-input').value = '';
@@ -959,18 +920,12 @@ function toggleDesc() {
   else { desc.classList.add('clamped'); btn.textContent = 'Lire la suite ↓'; }
 }
 
-function hidePreview() {
-  document.getElementById('book-preview').classList.remove('visible');
-  currentBook = null; currentRating = 0;
-}
+function hidePreview() { document.getElementById('book-preview').classList.remove('visible'); currentBook = null; currentRating = 0; }
 
-function setRating(n) {
-  currentRating = n;
-  document.querySelectorAll('.star').forEach(s => s.classList.toggle('active', parseInt(s.dataset.v) <= n));
-}
+function setRating(n) { currentRating = n; document.querySelectorAll('.star').forEach(s => s.classList.toggle('active', parseInt(s.dataset.v) <= n)); }
 
 function addBook() {
-  if (!currentBook) return;
+  if (!currentBook || !currentUser) return;
   currentBook.rating = currentRating;
   currentBook.note = document.getElementById('note-input').value.trim();
   library.unshift(currentBook);
@@ -1014,9 +969,7 @@ function renderLibrary() {
   grid.innerHTML = books.map(b => {
     const realIdx = library.indexOf(b);
     const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) : '☆☆☆☆☆';
-    const coverHtml = b.cover
-      ? `<div class="card-cover-wrap"><img class="card-cover" src="${b.cover}" onerror="this.parentElement.innerHTML='<div class=\'card-cover-ph\'>📚</div>'"></div>`
-      : `<div class="card-cover-wrap"><div class="card-cover-ph">📚</div></div>`;
+    const coverHtml = b.cover ? `<div class="card-cover-wrap"><img class="card-cover" src="${b.cover}" onerror="this.parentElement.innerHTML='<div class=\'card-cover-ph\'>📚</div>'"></div>` : `<div class="card-cover-wrap"><div class="card-cover-ph">📚</div></div>`;
     return `<div class="book-card" onclick="openModal(${realIdx})">${coverHtml}<div class="card-info"><div class="card-title">${b.title}</div><div class="card-author">${b.author}</div><div class="card-stars" style="color:var(--gold)">${stars}</div></div></div>`;
   }).join('');
 }
@@ -1040,7 +993,6 @@ function openModal(idx) {
 }
 
 let modalCurrentRating = 0;
-
 function enableEditMode() {
   const b = library[activeModalIdx];
   modalCurrentRating = b.rating || 0;
@@ -1050,16 +1002,8 @@ function enableEditMode() {
   document.getElementById('modal-view-mode').style.display = 'none';
   document.getElementById('modal-edit-mode').style.display = 'block';
 }
-
-function cancelEditMode() {
-  document.getElementById('modal-edit-mode').style.display = 'none';
-  document.getElementById('modal-view-mode').style.display = 'block';
-}
-
-function setModalRating(n) {
-  modalCurrentRating = n;
-  document.querySelectorAll('.star-edit').forEach(s => s.classList.toggle('active', parseInt(s.dataset.v) <= n));
-}
+function cancelEditMode() { document.getElementById('modal-edit-mode').style.display = 'none'; document.getElementById('modal-view-mode').style.display = 'block'; }
+function setModalRating(n) { modalCurrentRating = n; document.querySelectorAll('.star-edit').forEach(s => s.classList.toggle('active', parseInt(s.dataset.v) <= n)); }
 
 async function saveBookEdit() {
   if (activeModalIdx === null) return;
@@ -1069,30 +1013,22 @@ async function saveBookEdit() {
   const newCover = document.getElementById('modal-cover-input').value.trim();
   if (newCover) b.cover = newCover;
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/Livres?isbn=eq.${b.isbn}`, {
-      method: 'PATCH',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rating: b.rating, note: b.note, cover: b.cover })
-    });
+    await supabase.from('Livres').update({ rating: b.rating, note: b.note, cover: b.cover }).eq('isbn', b.isbn).eq('user_id', currentUser.id);
   } catch(e) { console.log('Update Supabase échoué', e); }
   saveLibrary(); renderLibrary(); renderStats();
   const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) : '☆☆☆☆☆';
   document.getElementById('modal-stars').innerHTML = `<span style="color:var(--gold)">${stars}</span> ${b.rating ? b.rating + '/5' : 'Non noté'}`;
   document.getElementById('modal-note-text').textContent = b.note || 'Aucune note personnelle.';
-  const wrap = document.getElementById('modal-cover-wrap');
-  wrap.innerHTML = b.cover ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">` : `<div class="modal-cover-ph">📚</div>`;
-  cancelEditMode();
-  toast('✓ Modifications sauvegardées !');
+  document.getElementById('modal-cover-wrap').innerHTML = b.cover ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">` : `<div class="modal-cover-ph">📚</div>`;
+  cancelEditMode(); toast('✓ Modifications sauvegardées !');
 }
 
-function closeModal(e) {
-  if (!e || e.target === document.getElementById('modal-bg')) document.getElementById('modal-bg').classList.remove('open');
-}
+function closeModal(e) { if (!e || e.target === document.getElementById('modal-bg')) document.getElementById('modal-bg').classList.remove('open'); }
 
 function deleteCurrentBook() {
   if (activeModalIdx === null) return;
   const b = library[activeModalIdx];
-  deleteFromSupabase(b.isbn);
+  supabase.from('Livres').delete().eq('isbn', b.isbn).eq('user_id', currentUser.id);
   library.splice(activeModalIdx, 1);
   saveLibrary(); closeModal(); renderLibrary(); updateHeaderStats();
   toast('🗑 ' + b.title + ' supprimé');
@@ -1101,13 +1037,7 @@ function deleteCurrentBook() {
 function renderStats() {
   const total = library.length;
   document.getElementById('stat-total').textContent = total;
-  if (total === 0) {
-    document.getElementById('stat-avg').textContent = '—';
-    document.getElementById('stat-authors').textContent = 0;
-    document.getElementById('stat-genres').textContent = 0;
-    document.getElementById('genres-bars').innerHTML = '<p style="font-size:0.8rem;color:var(--ink-muted);text-align:center;padding:12px 0">Aucun livre encore</p>';
-    return;
-  }
+  if (total === 0) { document.getElementById('stat-avg').textContent = '—'; document.getElementById('stat-authors').textContent = 0; document.getElementById('stat-genres').textContent = 0; document.getElementById('genres-bars').innerHTML = '<p style="font-size:0.8rem;color:var(--ink-muted);text-align:center;padding:12px 0">Aucun livre encore</p>'; return; }
   const rated = library.filter(b => b.rating > 0);
   const avg = rated.length ? (rated.reduce((s,b) => s + b.rating, 0) / rated.length).toFixed(1) : '—';
   document.getElementById('stat-avg').textContent = avg;
@@ -1117,54 +1047,43 @@ function renderStats() {
   const genres = Object.entries(genreCount).sort((a,b) => b[1]-a[1]);
   document.getElementById('stat-genres').textContent = genres.length;
   const max = genres[0]?.[1] || 1;
-  document.getElementById('genres-bars').innerHTML = genres.map(([g, c]) =>
-    `<div class="genre-bar-row"><div class="genre-bar-label"><span>${g}</span><span>${c} livre${c>1?'s':''}</span></div><div class="genre-bar-track"><div class="genre-bar-fill" style="width:${Math.round(c/max*100)}%"></div></div></div>`
-  ).join('');
+  document.getElementById('genres-bars').innerHTML = genres.map(([g, c]) => `<div class="genre-bar-row"><div class="genre-bar-label"><span>${g}</span><span>${c} livre${c>1?'s':''}</span></div><div class="genre-bar-track"><div class="genre-bar-fill" style="width:${Math.round(c/max*100)}%"></div></div></div>`).join('');
 }
 
 function showLoader(on) { document.getElementById('loader').classList.toggle('active', on); }
 function saveLibrary() { localStorage.setItem('library', JSON.stringify(library)); }
-function updateHeaderStats() {
-  const n = library.length;
-  document.getElementById('header-stats').textContent = n + ' livre' + (n !== 1 ? 's' : '');
-}
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
+function updateHeaderStats() { const n = library.length; document.getElementById('header-stats').textContent = n + ' livre' + (n !== 1 ? 's' : ''); }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2800); }
 
+// ── SUPABASE avec user_id ──
 async function syncToSupabase(book) {
+  if (!currentUser) return;
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/Livres`, {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ isbn: book.isbn, title: book.title, author: book.author, genre: book.genre, description: book.description, cover: book.cover, rating: book.rating, note: book.note, year: book.year, pages: book.pages, added_at: book.addedAt })
+    await supabase.from('Livres').insert({
+      isbn: book.isbn, title: book.title, author: book.author, genre: book.genre,
+      description: book.description, cover: book.cover, rating: book.rating,
+      note: book.note, year: book.year, pages: book.pages, added_at: book.addedAt,
+      user_id: currentUser.id
     });
   } catch(e) { console.log('Sync Supabase échouée', e); }
 }
 
-async function deleteFromSupabase(isbn) {
-  try {
-    await fetch(`${SUPABASE_URL}/rest/v1/Livres?isbn=eq.${isbn}`, {
-      method: 'DELETE',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-    });
-  } catch(e) { console.log('Suppression Supabase échouée', e); }
-}
-
 async function loadFromSupabase() {
+  if (!currentUser) return;
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/Livres?select=*&order=created_at.desc`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-    });
-    const data = await res.json();
-    if (Array.isArray(data) && data.length > 0) {
+    const { data, error } = await supabase.from('Livres').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+    if (error) throw error;
+    if (data && data.length > 0) {
       library = data.map(b => ({ id: b.id, isbn: b.isbn, title: b.title, author: b.author, genre: b.genre, description: b.description, cover: b.cover, rating: b.rating, note: b.note, year: b.year, pages: b.pages, addedAt: b.added_at }));
       localStorage.setItem('library', JSON.stringify(library));
+    } else {
+      library = JSON.parse(localStorage.getItem('library') || '[]');
     }
-  } catch(e) { console.log('Chargement Supabase échoué, utilisation localStorage', e); }
+    updateHeaderStats(); renderLibrary(); renderStats(); updateBackupLabel();
+  } catch(e) {
+    library = JSON.parse(localStorage.getItem('library') || '[]');
+    updateHeaderStats(); renderLibrary(); renderStats();
+  }
 }
 
 function exportJSON() {
@@ -1173,13 +1092,10 @@ function exportJSON() {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'ma-bibliotheque-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
+  a.href = url; a.download = 'ma-bibliotheque-' + new Date().toISOString().slice(0,10) + '.json'; a.click();
   URL.revokeObjectURL(url);
   localStorage.setItem('lastBackup', new Date().toLocaleString('fr-FR'));
-  updateBackupLabel();
-  toast('✓ JSON exporté !');
+  updateBackupLabel(); toast('✓ JSON exporté !');
 }
 
 function exportCSV() {
@@ -1189,17 +1105,12 @@ function exportCSV() {
   const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'ma-bibliotheque-' + new Date().toISOString().slice(0,10) + '.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('✓ CSV exporté !');
+  const a = document.createElement('a'); a.href = url; a.download = 'ma-bibliotheque-' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  URL.revokeObjectURL(url); toast('✓ CSV exporté !');
 }
 
 function importJSON(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
@@ -1213,8 +1124,7 @@ function importJSON(event) {
       toast('✓ ' + added + ' livre(s) importé(s) !');
     } catch(err) { toast('Erreur : fichier JSON invalide'); }
   };
-  reader.readAsText(file);
-  event.target.value = '';
+  reader.readAsText(file); event.target.value = '';
 }
 
 function updateBackupLabel() {
@@ -1225,7 +1135,11 @@ function updateBackupLabel() {
 
 document.getElementById('isbn-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchByISBN(); });
 document.getElementById('title-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchByTitle(); });
+document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
+document.getElementById('auth-password').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
+
 updateBackupLabel();
+initAuth();
 </script>
 </body>
 </html>
