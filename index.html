@@ -1131,16 +1131,17 @@ function updateBackupLabel() {
   if (el) el.textContent = last ? 'Dernière export JSON : ' + last : 'Données synchronisées sur Supabase';
 }
 
-document.getElementById('isbn-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchByISBN(); });
-document.getElementById('title-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchByTitle(); });
-document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
-document.getElementById('auth-password').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
-
-document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
-document.getElementById('tab-signup').addEventListener('click', () => switchAuthTab('signup'));
-document.getElementById('auth-submit-btn').addEventListener('click', handleAuth);
-updateBackupLabel();
-initAuth();
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
+  document.getElementById('tab-signup').addEventListener('click', () => switchAuthTab('signup'));
+  document.getElementById('auth-submit-btn').addEventListener('click', handleAuth);
+  document.getElementById('isbn-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchByISBN(); });
+  document.getElementById('title-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchByTitle(); });
+  document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
+  document.getElementById('auth-password').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
+  updateBackupLabel();
+  initAuth();
+});
 </script>
 </body>
 </html>
