@@ -54,8 +54,8 @@
   .auth-logo span { color: var(--accent); font-style: italic; }
   .auth-tagline { font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 40px; text-align: center; letter-spacing: 0.04em; }
   .auth-card { background: var(--white); border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-  .auth-tabs { display: flex; gap: 0; margin-bottom: 24px; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--cream-dark); }
-  .auth-tab { flex: 1; padding: 10px; background: transparent; border: none; font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; color: var(--ink-muted); transition: all .2s; }
+  .auth-tabs { display: flex; gap: 0; margin-bottom: 24px; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--cream-dark); position: relative; z-index: 10; }
+  .auth-tab { flex: 1; padding: 10px; background: transparent; border: none; font-family: var(--font-body); font-size: 0.85rem; cursor: pointer; color: var(--ink-muted); transition: all .2s; position: relative; z-index: 10; -webkit-appearance: none; }
   .auth-tab.active { background: var(--ink); color: var(--cream); }
   .auth-label { font-size: 0.75rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: block; }
   .auth-input { width: 100%; padding: 13px 14px; border-radius: 10px; border: 1.5px solid var(--cream-dark); background: var(--cream); font-family: var(--font-body); font-size: 0.9rem; color: var(--ink); outline: none; transition: border-color .2s; margin-bottom: 14px; }
