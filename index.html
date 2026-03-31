@@ -690,7 +690,7 @@ async function fetchFromBnF(query, isISBN = false) {
   try {
     const bnfQuery = isISBN
       ? `bib.isbn+all+"${query}"`
-      : `bib.title+all+"${encodeURIComponent(query)}"`;
+      : `bib.title+all+"${query}"`;
 
     const res = await fetch(`https://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve&query=${bnfQuery}&maximumRecords=6&recordSchema=unimarcxchange`);
     const text = await res.text();
@@ -705,6 +705,8 @@ async function fetchFromBnF(query, isISBN = false) {
     }
 
     const results = [];
+    const seen = new Set();
+
     records.forEach(record => {
       const getField = (tag, sub) => {
         const el = record.querySelector(`datafield[tag="${tag}"] subfield[code="${sub}"]`);
@@ -715,28 +717,37 @@ async function fetchFromBnF(query, isISBN = false) {
         return Array.from(els).map(e => e.textContent.trim());
       };
 
-      const title = getField('200', 'a') || getField('200', 'e') || '';
-      const author = getField('700', 'a') + (getField('700', 'b') ? ' ' + getField('700', 'b') : '')
-        || getField('701', 'a') || '';
-      const isbn = getField('010', 'a').replace(/[^0-9X]/g, '') || '';
+      const title = getField('200', 'a') || '';
+      const subtitle = getField('200', 'e') || '';
+      const fullTitle = subtitle ? `${title} : ${subtitle}` : title;
+      const authorLast = getField('700', 'a') || getField('701', 'a') || '';
+      const authorFirst = getField('700', 'b') || getField('701', 'b') || '';
+      const author = authorFirst ? `${authorFirst} ${authorLast}` : authorLast;
+
+      // Récupère l'ISBN depuis tag 073 (EAN) ou 010
+      const isbn = getField('073', 'a').replace(/[^0-9X]/g, '')
+        || getField('010', 'a').replace(/[^0-9\-]/g, '').replace(/-/g, '') || '';
+
       const publisher = getField('210', 'c') || getField('214', 'c') || '';
-      const year = getField('210', 'd') || getField('214', 'd') || '';
+      const year = (getField('210', 'd') || getField('214', 'd') || '').replace(/[^0-9]/g, '').slice(0, 4);
       const subjects = getAllFields('610', 'a').concat(getAllFields('606', 'a'));
 
-      if (!title) return;
+      if (!title || seen.has(title)) return;
+      seen.add(title);
 
       results.push({
-        title,
+        title: fullTitle,
         author_name: author ? [author] : ['Auteur inconnu'],
         isbn: isbn ? [isbn] : [],
         publisher: publisher ? [publisher] : [],
-        first_publish_year: year.replace(/[^0-9]/g, '').slice(0, 4),
+        first_publish_year: year,
         subject: subjects,
         cover_i: null,
-        cover_url: isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : null,
+        cover_url: null,
         key: null,
         _source: 'bnf',
-        _raw: { title, author, isbn, publisher, year, subjects }
+        _isbn: isbn,
+        _raw: { title: fullTitle, author, isbn, publisher, year, subjects }
       });
     });
 
@@ -746,16 +757,33 @@ async function fetchFromBnF(query, isISBN = false) {
       return;
     }
 
+    // Récupère la couverture via Google Books avec l'ISBN
+    for (const b of results) {
+      if (b._isbn) {
+        try {
+          const gRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${b._isbn}&maxResults=1`);
+          const gData = await gRes.json();
+          if (gData.items?.[0]?.volumeInfo?.imageLinks) {
+            const links = gData.items[0].volumeInfo.imageLinks;
+            b.cover_url = (links.extraLarge || links.large || links.medium || links.thumbnail || '').replace('http://', 'https://');
+          }
+          if (!b._raw.description && gData.items?.[0]?.volumeInfo?.description) {
+            b._raw.description = gData.items[0].volumeInfo.description;
+          }
+        } catch(e) {}
+      }
+    }
+
     if (results.length === 1 || isISBN) {
       const b = results[0];
       currentBook = {
         id: Date.now(),
-        isbn: b.isbn[0] || '',
+        isbn: b._isbn || '',
         title: b.title,
         author: b.author_name[0] || 'Auteur inconnu',
         genre: detectGenre(b.subject, b.title, b.author_name[0]),
-        description: 'Pas de résumé disponible.',
-        cover: b.cover_url,
+        description: b._raw.description || 'Pas de résumé disponible.',
+        cover: b.cover_url || null,
         publisher: b.publisher[0] || '',
         year: b.first_publish_year || '',
         pages: null,
