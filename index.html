@@ -248,8 +248,8 @@
   <div class="auth-tagline">Ta bibliothèque personnelle, partout</div>
   <div class="auth-card">
     <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Se connecter</button>
-      <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">S'inscrire</button>
+      <button class="auth-tab active" id="tab-login">Se connecter</button>
+      <button class="auth-tab" id="tab-signup">S'inscrire</button>
     </div>
     <div id="auth-error" class="auth-error"></div>
     <div id="auth-success" class="auth-success"></div>
@@ -261,7 +261,7 @@
       <label class="auth-label">Prénom (optionnel)</label>
       <input class="auth-input" id="auth-name" type="text" placeholder="Ton prénom">
     </div>
-    <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Se connecter</button>
+    <button class="auth-btn" id="auth-submit-btn">Se connecter</button>
   </div>
 </div>
 
@@ -1136,6 +1136,9 @@ document.getElementById('title-input').addEventListener('keydown', e => { if (e.
 document.getElementById('auth-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
 document.getElementById('auth-password').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
 
+document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
+document.getElementById('tab-signup').addEventListener('click', () => switchAuthTab('signup'));
+document.getElementById('auth-submit-btn').addEventListener('click', handleAuth);
 updateBackupLabel();
 initAuth();
 </script>
