@@ -56,10 +56,28 @@
   .tab-btn.active { color: var(--accent); }
   .tab-btn svg { width: 18px; height: 18px; }
 
-  .page { display: none; padding: 20px; max-width: 480px; margin: 0 auto; padding-bottom: calc(20px + var(--safe-bottom)); }
+  .page {
+  display: none;
+  padding: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: calc(16px + var(--safe-bottom));
+}
   .page.active { display: block; }
 
-  .scan-area { background: var(--ink); border-radius: 16px; overflow: hidden; position: relative; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .scan-area {
+    background: var(--ink);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    min-height: 220px;
+    width: 100%;
+    max-width: 760px;
+  }
   #scanner-video { width: 100%; height: 100%; object-fit: cover; display: none; }
   .scan-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--ink-muted); }
   .scan-placeholder svg { width: 56px; height: 56px; opacity: 0.4; }
@@ -121,12 +139,39 @@
   .sort-label { font-size: 0.75rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
   .sort-select { padding: 5px 10px; border-radius: 8px; border: 1.5px solid var(--cream-dark); background: var(--white); font-family: var(--font-body); font-size: 0.8rem; color: var(--ink); outline: none; }
 
-  .books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    align-items: start;
+  }
+
+  @media (min-width: 600px) {
+    .books-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+  }
+
+  @media (min-width: 820px) {
+    .books-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .books-grid {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 16px;
+    }
+  }
+
   .book-card { background: transparent; border-radius: 0; padding: 0; display: flex; flex-direction: column; box-shadow: none; cursor: pointer; transition: transform .15s; overflow: visible; }
   .book-card:active { transform: scale(0.95); }
   .book-card::before { display: none; }
-  .card-cover-wrap { width: 100%; padding-top: 150%; border-radius: 6px; overflow: hidden; box-shadow: 2px 4px 12px var(--shadow); margin-bottom: 6px; background: var(--cream-dark); flex-shrink: 0; position: relative; }
-  .card-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+  .card-cover-wrap {width: 100%; aspect-ratio: 2 / 3; border-radius: 8px; overflow: hidden; box-shadow: 2px 4px 12px var(--shadow); margin-bottom: 8px; background: var(--cream-dark); position: relative;}  
+  .card-cover {position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;}
   .card-cover-ph { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--ink-muted); font-size: 2rem; }
   .card-info { flex: 1; }
   .card-title { font-family: var(--font-display); font-size: 0.78rem; line-height: 1.2; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -200,6 +245,18 @@
   .search-result-title { font-family: var(--font-display); font-size: 0.85rem; line-height: 1.2; margin-bottom: 2px; }
   .search-result-author { font-size: 0.75rem; color: var(--accent); font-weight: 500; }
   .search-result-year { font-size: 0.7rem; color: var(--ink-muted); margin-top: 2px; }
+
+  .header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 480px; margin: 0 auto; gap: 8px; }
+  .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .logout-btn { background: none; border: none; color: var(--ink-muted); font-size: 0.72rem; cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-body); white-space: nowrap; }
+
+
+@media (max-width: 700px) {
+  .scan-area {
+    min-height: 320px;
+    max-width: 100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -229,8 +286,11 @@
 
 <!-- ── MAIN APP ── -->
 <div class="app" id="main-app">
+  <div id="readonly-banner" style="display:none; background:var(--accent-light); color:var(--accent); text-align:center; padding:10px; font-size:0.82rem; font-family:var(--font-body);">
+  👁 Vous consultez la bibliothèque de <b id="readonly-name"></b> — lecture seule
+</div>
   <div class="header">
-    <div class="header-inner">
+   <div class="header-inner">
       <h1>Ma <span>Bibliothèque</span></h1>
       <div class="header-right">
         <div class="header-stats" id="header-stats">0 livre</div>
@@ -325,6 +385,10 @@
 
   <div class="page" id="page-stats">
     <div class="stats-title">Statistiques</div>
+    <button onclick="shareLibrary()" style="display:flex; align-items:center; gap:8px; background:var(--white); border:1.5px solid var(--cream-dark); color:var(--ink-soft); font-family:var(--font-body); font-size:0.85rem; padding:12px 16px; border-radius:10px; cursor:pointer; margin-bottom:20px; width:100%;">
+  🔗 <span>Partager ma bibliothèque</span>
+  <span style="margin-left:auto; font-size:0.75rem; color:var(--ink-muted)">Copier le lien</span>
+</button>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">Livres lus</div></div>
       <div class="stat-card"><div class="stat-number" id="stat-avg">—</div><div class="stat-label">Note moyenne</div></div>
@@ -438,6 +502,16 @@ window.addEventListener('load', function() {
 
   updateBackupLabel();
   initAuth();
+
+   // Gestion partage
+  document.getElementById('share-btn').addEventListener('click', shareLibrary);
+
+  // Vérifie si on est en mode lecture seule
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUserId = urlParams.get('user');
+  if (sharedUserId) {
+    loadSharedLibrary(sharedUserId);
+  }
 });
 
 // ── AUTH ──
@@ -972,6 +1046,64 @@ function importJSON(event) {
     } catch(err) { toast('Erreur : fichier JSON invalide'); }
   };
   reader.readAsText(file); event.target.value = '';
+}
+
+function shareLibrary() {
+  if (!currentUser) return;
+  const url = window.location.origin + window.location.pathname + '?user=' + currentUser.id;
+  navigator.clipboard.writeText(url).then(() => {
+    toast('✓ Lien copié ! Partage-le avec tes amis 🔗');
+  }).catch(() => {
+    prompt('Copie ce lien :', url);
+  });
+}
+
+async function loadSharedLibrary(userId) {
+  // Cache auth et montre directement la bibliothèque en lecture seule
+  document.getElementById('auth-page').classList.remove('active');
+  document.getElementById('main-app').classList.add('active');
+  document.getElementById('readonly-banner').style.display = 'block';
+  document.getElementById('readonly-name').textContent = 'un ami';
+
+  // Cache les boutons d'action
+  document.getElementById('logout-btn').style.display = 'none';
+  document.getElementById('share-btn').style.display = 'none';
+
+  // Cache l'onglet scanner
+  document.querySelectorAll('.tab-btn')[0].style.display = 'none';
+
+  // Va directement sur l'onglet livres
+  showPage('library');
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('Livres')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    library = data.map(b => ({
+      id: b.id, isbn: b.isbn, title: b.title, author: b.author,
+      genre: b.genre, description: b.description, cover: b.cover,
+      rating: b.rating, note: b.note, year: b.year, pages: b.pages,
+      addedAt: b.added_at
+    }));
+
+    updateHeaderStats();
+    renderLibrary();
+    renderStats();
+
+    // Cache les boutons supprimer/modifier dans les modals
+    document.getElementById('modal-view-mode').innerHTML = `
+      <div class="modal-actions">
+        <button class="btn-close" onclick="closeModal()">Fermer</button>
+      </div>`;
+
+  } catch(e) {
+    toast('Impossible de charger cette bibliothèque');
+  }
 }
 
 function updateBackupLabel() {
