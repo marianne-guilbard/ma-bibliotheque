@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<link rel="icon" href="apple-touch-icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Ma Bibliothèque">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -309,6 +311,11 @@
         <div class="preview-title" id="prev-title">—</div>
         <div class="preview-author" id="prev-author">—</div>
         <div class="preview-genre" id="prev-genre">—</div>
+        <div id="cover-url-wrap" style="display:none; margin-top:8px;">
+          <input class="isbn-input" id="cover-url-input" type="url" placeholder="Coller URL image…" style="font-size:0.75rem; padding:8px 10px;">
+          <button class="isbn-btn" onclick="applyCoverUrl()" style="padding:8px 12px; margin-top:6px; width:100%; border-radius:8px; font-size:0.75rem;">Appliquer</button>
+        </div>
+        <button id="add-cover-btn" onclick="toggleCoverInput()" style="margin-top:8px; background:none; border:none; color:var(--accent); font-size:0.72rem; cursor:pointer; padding:0; font-family:var(--font-body);">🖼 Ajouter une image</button>
       </div>
     </div>
     <div class="preview-desc clamped" id="prev-desc">—</div>
@@ -948,6 +955,27 @@ function displayPreview(book) {
   setRating(0);
   document.getElementById('note-input').value = '';
   document.getElementById('book-preview').classList.add('visible');
+}
+
+function toggleCoverInput() {
+  const wrap = document.getElementById('cover-url-wrap');
+  const btn = document.getElementById('add-cover-btn');
+  const isVisible = wrap.style.display !== 'none';
+  wrap.style.display = isVisible ? 'none' : 'block';
+  btn.textContent = isVisible ? '🖼 Ajouter une image' : '✕ Annuler';
+}
+
+function applyCoverUrl() {
+  const url = document.getElementById('cover-url-input').value.trim();
+  if (!url) { toast('Colle une URL d\'image valide'); return; }
+  if (!currentBook) return;
+  currentBook.cover = url;
+  const wrap = document.getElementById('preview-cover-wrap');
+  wrap.innerHTML = `<img class="cover-img" src="${url}" onerror="toast('Image non accessible'); this.style.display='none'">`;
+  document.getElementById('cover-url-wrap').style.display = 'none';
+  document.getElementById('add-cover-btn').textContent = '🖼 Changer l\'image';
+  document.getElementById('cover-url-input').value = '';
+  toast('✓ Image ajoutée !');
 }
 
 function toggleDesc() {
