@@ -542,18 +542,49 @@ async function searchByTitle() {
   hidePreview();
   hideSearchResults();
   try {
-    const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20&sort=new`);
+    // Google Books en premier pour les couvertures modernes
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&orderBy=relevance`);
     const data = await res.json();
-    let results = data.docs?.filter(b => b.title && b.author_name) || [];
-    const withCover = results.filter(b => b.cover_i);
-    const withoutCover = results.filter(b => !b.cover_i);
-    results = [...withCover, ...withoutCover].slice(0, 6);
-    if (!results.length) {
-      await fetchFromGoogleBooks(query);
+    if (data.items?.length) {
+      const results = data.items
+        .filter(item => item.volumeInfo?.title && item.volumeInfo?.authors)
+        .map(item => {
+          const info = item.volumeInfo;
+          return {
+            title: info.title,
+            author_name: info.authors || [],
+            cover_i: null,
+            cover_url: info.imageLinks
+              ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || '').replace('http://', 'https://').replace('zoom=1', 'zoom=2')
+              : null,
+            first_publish_year: info.publishedDate?.slice(0,4) || '',
+            publisher: info.publisher ? [info.publisher] : [],
+            subject: info.categories || [],
+            isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''],
+            key: null,
+            _source: 'google',
+            _raw: info
+          };
+        });
+      if (results.length) {
+        showLoader(false);
+        displaySearchResults(results);
+        return;
+      }
+    }
+    // Fallback Open Library
+    const olRes = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20&sort=new`);
+    const olData = await olRes.json();
+    let olResults = olData.docs?.filter(b => b.title && b.author_name) || [];
+    const withCover = olResults.filter(b => b.cover_i);
+    const withoutCover = olResults.filter(b => !b.cover_i);
+    olResults = [...withCover, ...withoutCover].slice(0, 6);
+    if (!olResults.length) {
+      await fetchFromBnF(query, false);
       return;
     }
     showLoader(false);
-    displaySearchResults(results);
+    displaySearchResults(olResults);
   } catch(e) {
     showLoader(false);
     toast('Erreur de connexion. Vérifie internet.');
