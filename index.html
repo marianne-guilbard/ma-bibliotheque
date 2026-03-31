@@ -113,57 +113,13 @@
   .sort-label { font-size: 0.75rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
   .sort-select { padding: 5px 10px; border-radius: 8px; border: 1.5px solid var(--cream-dark); background: var(--white); font-family: var(--font-body); font-size: 0.8rem; color: var(--ink); outline: none; }
 
-.books-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-  .book-card {
-    background: transparent;
-    border-radius: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    box-shadow: none;
-    cursor: pointer;
-    transition: transform .15s;
-    overflow: visible;
-  }
+  .books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .book-card { background: transparent; border-radius: 0; padding: 0; display: flex; flex-direction: column; box-shadow: none; cursor: pointer; transition: transform .15s; overflow: visible; }
   .book-card:active { transform: scale(0.95); }
   .book-card::before { display: none; }
-  .card-cover-wrap {
-    width: 100%;
-    aspect-ratio: 2 / 3;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 2px 4px 12px var(--shadow);
-    margin-bottom: 6px;
-    background: var(--cream-dark);
-    flex-shrink: 0;
-    position: relative;
-  }
-  .card-cover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-  }
-  .card-cover-ph {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ink-muted);
-    font-size: 2rem;
-  }
+  .card-cover-wrap { width: 100%; aspect-ratio: 2 / 3; border-radius: 6px; overflow: hidden; box-shadow: 2px 4px 12px var(--shadow); margin-bottom: 6px; background: var(--cream-dark); flex-shrink: 0; position: relative; }
+  .card-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+  .card-cover-ph { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--ink-muted); font-size: 2rem; }
   .card-info { flex: 1; }
   .card-title { font-family: var(--font-display); font-size: 0.78rem; line-height: 1.2; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-author { font-size: 0.68rem; color: var(--accent); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
@@ -299,8 +255,7 @@
     <input class="isbn-input" id="title-input" type="text" placeholder="Titre ou auteur…">
     <button class="isbn-btn" onclick="searchByTitle()">→</button>
   </div>
-    <div id="search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; box-shadow:0 2px 16px var(--shadow); overflow:hidden;">
-  </div>
+  <div id="search-results" style="display:none; margin-top:10px; background:var(--white); border-radius:12px; box-shadow:0 2px 16px var(--shadow); overflow:hidden;"></div>
 
   <div class="loader" id="loader"><div class="spinner"></div>Recherche en cours…</div>
 
@@ -416,7 +371,6 @@
       <div class="modal-note-label">Ma note</div>
       <div id="modal-note-text">—</div>
     </div>
-
     <div id="modal-view-mode">
       <div class="modal-actions">
         <button class="btn-delete" onclick="deleteCurrentBook()">🗑 Supprimer</button>
@@ -424,7 +378,6 @@
         <button class="btn-close" onclick="closeModal()">Fermer</button>
       </div>
     </div>
-
     <div id="modal-edit-mode" style="display:none">
       <div class="rating-row" style="margin-bottom:12px">
         <span class="rating-label">Ma note</span>
@@ -439,9 +392,7 @@
       <textarea class="note-area" id="modal-note-edit" placeholder="Ajouter une note personnelle…"></textarea>
       <div style="margin-bottom:12px">
         <div style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Image de couverture</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input class="isbn-input" id="modal-cover-input" type="url" placeholder="Coller URL image… (clic droit → copier l'adresse)" style="font-size:0.78rem;padding:10px 12px">
-        </div>
+        <input class="isbn-input" id="modal-cover-input" type="url" placeholder="Coller URL image…" style="font-size:0.78rem;padding:10px 12px">
         <div style="font-size:0.7rem;color:var(--ink-muted);margin-top:4px">Google Images → clic sur image → clic droit → "Copier l'adresse de l'image"</div>
       </div>
       <div class="modal-actions">
@@ -449,7 +400,6 @@
         <button class="btn-save" onclick="saveBookEdit()">✓ Sauvegarder</button>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -457,12 +407,8 @@
 
 <script src="https://unpkg.com/@zxing/library@0.19.3/umd/index.min.js"></script>
 <script>
-// ════════════════════════════════════════════
-// ⚙️  CONFIGURATION — remplace ces 2 valeurs
-// ════════════════════════════════════════════
 const SUPABASE_URL = 'https://ziiefhonxqbxipsjmqun.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppaWVmaG9ueHFieGlwc2ptcXVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MDMxNDEsImV4cCI6MjA5MDQ3OTE0MX0.x0wHnAmFxAV3T8m8O6Ps-Rik8OUXGPMcAFKC1Gb_9HU';
-// ════════════════════════════════════════════
 
 let library = JSON.parse(localStorage.getItem('library') || '[]');
 let currentBook = null;
@@ -513,10 +459,7 @@ async function startScanner() {
         fetchBook(isbn);
       }
     });
-  } catch(e) {
-    toast('Caméra inaccessible — utilise la saisie ISBN');
-    stopScanner();
-  }
+  } catch(e) { toast('Caméra inaccessible — utilise la saisie ISBN'); stopScanner(); }
 }
 
 function stopScanner() {
@@ -535,6 +478,7 @@ function searchByISBN() {
   fetchBook(isbn);
 }
 
+// ── FLUX RECHERCHE PAR TITRE : Google Books → Open Library → BnF → Inventaire ──
 async function searchByTitle() {
   const query = document.getElementById('title-input').value.trim();
   if (!query || query.length < 2) { toast('Saisis au moins 2 caractères'); return; }
@@ -542,7 +486,7 @@ async function searchByTitle() {
   hidePreview();
   hideSearchResults();
   try {
-    // Google Books en premier pour les couvertures modernes
+    // 1. Google Books en premier (couvertures modernes)
     const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&orderBy=relevance`);
     const data = await res.json();
     if (data.items?.length) {
@@ -554,9 +498,7 @@ async function searchByTitle() {
             title: info.title,
             author_name: info.authors || [],
             cover_i: null,
-            cover_url: info.imageLinks
-              ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || '').replace('http://', 'https://').replace('zoom=1', 'zoom=2')
-              : null,
+            cover_url: info.imageLinks ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail || '').replace('http://', 'https://').replace('zoom=1', 'zoom=2') : null,
             first_publish_year: info.publishedDate?.slice(0,4) || '',
             publisher: info.publisher ? [info.publisher] : [],
             subject: info.categories || [],
@@ -566,245 +508,169 @@ async function searchByTitle() {
             _raw: info
           };
         });
-      if (results.length) {
-        showLoader(false);
-        displaySearchResults(results);
-        return;
-      }
+      if (results.length) { showLoader(false); displaySearchResults(results); return; }
     }
-    // Fallback Open Library
+    // 2. Open Library
     const olRes = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20&sort=new`);
     const olData = await olRes.json();
     let olResults = olData.docs?.filter(b => b.title && b.author_name) || [];
     const withCover = olResults.filter(b => b.cover_i);
     const withoutCover = olResults.filter(b => !b.cover_i);
     olResults = [...withCover, ...withoutCover].slice(0, 6);
-    if (!olResults.length) {
-      await fetchFromBnF(query, false);
-      return;
-    }
-    showLoader(false);
-    displaySearchResults(olResults);
-  } catch(e) {
-    showLoader(false);
-    toast('Erreur de connexion. Vérifie internet.');
-  }
+    if (olResults.length) { showLoader(false); displaySearchResults(olResults); return; }
+    // 3. BnF
+    const bnfFound = await fetchFromBnF(query, false, true);
+    if (bnfFound) return;
+    // 4. Inventaire
+    await fetchFromInventaire(query);
+  } catch(e) { showLoader(false); toast('Erreur de connexion. Vérifie internet.'); }
 }
 
-function displaySearchResults(results) {
-  const container = document.getElementById('search-results');
-  container.style.display = 'block';
-  container.innerHTML = results.map((b, i) => {
-    const coverUrl = b.cover_url || (b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-S.jpg` : null);
-    const cover = coverUrl
-      ? `<img class="search-result-thumb" src="${coverUrl}" onerror="this.style.display='none'">`
-      : `<div class="search-result-thumb-ph">📚</div>`;
-    return `<div class="search-result-item" onclick="selectSearchResult(${i})">
-      ${cover}
-      <div class="search-result-info">
-        <div class="search-result-title">${b.title}</div>
-        <div class="search-result-author">${b.author_name?.[0] || 'Auteur inconnu'}</div>
-        <div class="search-result-year">${b.first_publish_year || ''} ${b.publisher?.[0] ? '· ' + b.publisher[0] : ''}</div>
-      </div>
-    </div>`;
-  }).join('');
-  window._searchResults = results;
-}
-
-async function selectSearchResult(idx) {
-  const searchBook = window._searchResults[idx];
-  hideSearchResults();
+// ── FLUX RECHERCHE PAR ISBN : Open Library → Google Books → BnF → Inventaire ──
+async function fetchBook(isbn) {
   showLoader(true);
   hidePreview();
+  try {
+    // 1. Open Library
+    const [olRes, searchRes] = await Promise.all([
+      fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`),
+      fetch(`https://openlibrary.org/search.json?isbn=${isbn}`)
+    ]);
+    const olData = await olRes.json();
+    const searchData = await searchRes.json();
+    const key = `ISBN:${isbn}`;
+    const book = olData[key];
+    const searchBook = searchData.docs?.[0];
 
-  // Si résultat Google Books
-  if (searchBook._source === 'google') {
-    const info = searchBook._raw;
-    const cover = info.imageLinks
-      ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null)
-      : null;
+    if (!book && !searchBook) {
+      // 2. Google Books
+      const googleRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+      const googleData = await googleRes.json();
+      if (googleData.items?.length) { await fetchFromGoogleBooks(`isbn:${isbn}`); return; }
+      // 3. BnF
+      const bnfFound = await fetchFromBnF(isbn, true, false);
+      if (bnfFound) return;
+      // 4. Inventaire
+      await fetchFromInventaire(isbn);
+      return;
+    }
+
+    let description = 'Pas de résumé disponible.';
+    const workKey = searchBook?.key;
+    if (workKey) {
+      try {
+        const workRes = await fetch(`https://openlibrary.org${workKey}.json`);
+        const workData = await workRes.json();
+        if (workData.description) {
+          const raw = typeof workData.description === 'string' ? workData.description : workData.description.value || description;
+          description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
+        }
+      } catch(e) {}
+    }
+
     currentBook = {
-      id: Date.now(),
-      isbn: searchBook.isbn?.[0] || '',
-      title: info.title || 'Titre inconnu',
-      author: (info.authors || ['Auteur inconnu']).join(', '),
-      genre: detectGenre(info.categories, info.title, info.authors?.[0]),
-      description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
-      cover: cover ? cover.replace('http://', 'https://') : null,
-      publisher: info.publisher || '',
-      year: info.publishedDate?.slice(0,4) || '',
-      pages: info.pageCount || null,
-      language: info.language || '',
-      rating: 0,
-      note: '',
-      addedAt: new Date().toLocaleDateString('fr-FR')
+      id: Date.now(), isbn,
+      title: book?.title || searchBook?.title || 'Titre inconnu',
+      author: book?.authors?.map(a => a.name).join(', ') || searchBook?.author_name?.join(', ') || 'Auteur inconnu',
+      genre: detectGenre(book?.subjects?.map(s => s.name) || searchBook?.subject, book?.title || searchBook?.title, book?.authors?.[0]?.name || searchBook?.author_name?.[0]),
+      description,
+      cover: book?.cover?.large || book?.cover?.medium || (searchBook?.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
+      publisher: book?.publishers?.[0]?.name || searchBook?.publisher?.[0] || '',
+      year: book?.publish_date?.slice(-4) || searchBook?.first_publish_year?.toString() || '',
+      pages: book?.number_of_pages || searchBook?.number_of_pages_median || null,
+      language: '', rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
     };
     showLoader(false);
     displayPreview(currentBook);
-    return;
-  }
-
-  // Résultat Open Library
-  let description = 'Pas de résumé disponible.';
-  if (searchBook.key) {
-    try {
-      const workRes = await fetch(`https://openlibrary.org${searchBook.key}.json`);
-      const workData = await workRes.json();
-      if (workData.description) {
-        const raw = typeof workData.description === 'string'
-          ? workData.description
-          : workData.description.value || description;
-        description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
-      }
-    } catch(e) {}
-  }
-
-  currentBook = {
-    id: Date.now(),
-    isbn: searchBook.isbn?.[0] || '',
-    title: searchBook.title || 'Titre inconnu',
-    author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
-    genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
-    description,
-    cover: searchBook.cover_url || (searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
-    publisher: searchBook.publisher?.[0] || '',
-    year: searchBook.first_publish_year?.toString() || '',
-    pages: searchBook.number_of_pages_median || null,
-    language: '',
-    rating: 0,
-    note: '',
-    addedAt: new Date().toLocaleDateString('fr-FR')
-  };
-  showLoader(false);
-  displayPreview(currentBook);
+  } catch(e) { showLoader(false); toast('Erreur de connexion. Vérifie internet.'); }
 }
 
-function detectGenre(subjects, title, author) {
-  const map = {
-    'Roman': ['fiction', 'novel', 'roman', 'littérature', 'literature', 'literary', 'general fiction', 'contemporary fiction'],
-    'Policier': ['detective', 'mystery', 'crime', 'thriller', 'policier', 'suspense', 'noir'],
-    'Science-fiction': ['science fiction', 'sci-fi', 'space', 'futuristic', 'dystopia', 'dystopie', 'speculative'],
-    'Fantasy': ['fantasy', 'magic', 'wizard', 'dragon', 'fantastique', 'heroic', 'supernatural'],
-    'Biographie': ['biography', 'autobiography', 'memoir', 'biographie', 'mémoires'],
-    'Histoire': ['history', 'historical', 'histoire', 'war', 'guerre', 'civilization'],
-    'Philosophie': ['philosophy', 'philosophie', 'ethics', 'éthique', 'absurd', 'existential'],
-    'Sciences': ['science', 'physics', 'biology', 'chemistry', 'mathematics', 'physique'],
-    'Développement personnel': ['self-help', 'personal development', 'motivation', 'leadership'],
-    'Économie': ['economics', 'economy', 'finance', 'business', 'économie'],
-    'Psychologie': ['psychology', 'psychologie', 'mental', 'behavior', 'comportement'],
-    'Art': ['art', 'painting', 'photography', 'design', 'architecture'],
-    'Cuisine': ['cooking', 'cuisine', 'recipe', 'food', 'gastronomie'],
-    'Voyage': ['travel', 'voyage', 'geography', 'géographie', 'exploration'],
-    'Jeunesse': ['children', 'juvenile', 'young adult', 'jeunesse', 'youth', 'teen'],
-    'Poésie': ['poetry', 'poésie', 'poems', 'verse'],
-    'Bande dessinée': ['comics', 'graphic novel', 'manga', 'bande dessinée'],
-    'Religion': ['religion', 'spirituality', 'christianity', 'islam', 'buddhism'],
-    'Politique': ['politics', 'political', 'politique', 'government', 'democracy'],
-  };
-
-  // Essai via les sujets
-  if (subjects && subjects.length) {
-    const subjectsLower = subjects.map(s => s.toLowerCase());
-    for (const [genre, keywords] of Object.entries(map)) {
-      for (const subject of subjectsLower) {
-        for (const keyword of keywords) {
-          if (subject.includes(keyword)) return genre;
-        }
-      }
-    }
-    const first = subjects[0];
-    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
-  }
-
-  // Fallback : cherche dans le titre et l'auteur
-  const text = ((title || '') + ' ' + (author || '')).toLowerCase();
-  for (const [genre, keywords] of Object.entries(map)) {
-    for (const keyword of keywords) {
-      if (text.includes(keyword)) return genre;
-    }
-  }
-
-  return 'Roman'; // Par défaut mieux que "Général"
-}
-
-function hideSearchResults() {
-  const container = document.getElementById('search-results');
-  container.style.display = 'none';
-  container.innerHTML = '';
-}
-
-async function fetchFromBnF(query, isISBN = false) {
+// ── GOOGLE BOOKS ──
+async function fetchFromGoogleBooks(query) {
   try {
-    const bnfQuery = isISBN
-      ? `bib.isbn+all+"${query}"`
-      : `bib.title+all+"${query}"`;
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&langRestrict=fr`);
+    const data = await res.json();
+    if (!data.items || !data.items.length) {
+      const res2 = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
+      const data2 = await res2.json();
+      if (!data2.items || !data2.items.length) {
+        const bnfFound = await fetchFromBnF(query.replace('isbn:',''), query.startsWith('isbn:'), false);
+        if (!bnfFound) await fetchFromInventaire(query.replace('isbn:',''));
+        return;
+      }
+      data.items = data2.items;
+    }
+    if (data.items.length === 1 || query.startsWith('isbn:')) {
+      const info = data.items[0].volumeInfo;
+      const cover = info.imageLinks ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null) : null;
+      currentBook = {
+        id: Date.now(),
+        isbn: info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || '',
+        title: info.title || 'Titre inconnu',
+        author: (info.authors || ['Auteur inconnu']).join(', '),
+        genre: detectGenre(info.categories, info.title, info.authors?.[0]),
+        description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
+        cover: cover ? cover.replace('http://', 'https://') : null,
+        publisher: info.publisher || '',
+        year: info.publishedDate ? info.publishedDate.slice(0,4) : '',
+        pages: info.pageCount || null, language: info.language || '',
+        rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
+      };
+      showLoader(false);
+      displayPreview(currentBook);
+    } else {
+      const results = data.items.map(item => {
+        const info = item.volumeInfo;
+        return {
+          title: info.title, author_name: info.authors || [], cover_i: null,
+          cover_url: info.imageLinks?.thumbnail?.replace('http://', 'https://') || null,
+          first_publish_year: info.publishedDate?.slice(0,4) || '',
+          publisher: info.publisher ? [info.publisher] : [],
+          subject: info.categories || [],
+          isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''],
+          key: null, _source: 'google', _raw: info
+        };
+      });
+      showLoader(false);
+      displaySearchResults(results);
+    }
+  } catch(e) { showLoader(false); toast('Erreur de connexion. Vérifie internet.'); }
+}
 
+// ── BnF — retourne true si trouvé, false sinon ──
+async function fetchFromBnF(query, isISBN = false, returnResults = false) {
+  try {
+    const bnfQuery = isISBN ? `bib.isbn+all+"${query}"` : `bib.title+all+"${query}"`;
     const res = await fetch(`https://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve&query=${bnfQuery}&maximumRecords=6&recordSchema=unimarcxchange`);
     const text = await res.text();
     const parser = new DOMParser();
     const xml = parser.parseFromString(text, 'text/xml');
     const records = xml.querySelectorAll('record');
-
-    if (!records.length) {
-      toast('Livre non trouvé dans aucune base de données');
-      showLoader(false);
-      return;
-    }
+    if (!records.length) return false;
 
     const results = [];
     const seen = new Set();
-
     records.forEach(record => {
-      const getField = (tag, sub) => {
-        const el = record.querySelector(`datafield[tag="${tag}"] subfield[code="${sub}"]`);
-        return el ? el.textContent.trim() : '';
-      };
-      const getAllFields = (tag, sub) => {
-        const els = record.querySelectorAll(`datafield[tag="${tag}"] subfield[code="${sub}"]`);
-        return Array.from(els).map(e => e.textContent.trim());
-      };
-
+      const getField = (tag, sub) => { const el = record.querySelector(`datafield[tag="${tag}"] subfield[code="${sub}"]`); return el ? el.textContent.trim() : ''; };
+      const getAllFields = (tag, sub) => { const els = record.querySelectorAll(`datafield[tag="${tag}"] subfield[code="${sub}"]`); return Array.from(els).map(e => e.textContent.trim()); };
       const title = getField('200', 'a') || '';
       const subtitle = getField('200', 'e') || '';
       const fullTitle = subtitle ? `${title} : ${subtitle}` : title;
       const authorLast = getField('700', 'a') || getField('701', 'a') || '';
       const authorFirst = getField('700', 'b') || getField('701', 'b') || '';
       const author = authorFirst ? `${authorFirst} ${authorLast}` : authorLast;
-
-      // Récupère l'ISBN depuis tag 073 (EAN) ou 010
-      const isbn = getField('073', 'a').replace(/[^0-9X]/g, '')
-        || getField('010', 'a').replace(/[^0-9\-]/g, '').replace(/-/g, '') || '';
-
+      const isbn = getField('073', 'a').replace(/[^0-9X]/g, '') || getField('010', 'a').replace(/[^0-9\-]/g, '').replace(/-/g, '') || '';
       const publisher = getField('210', 'c') || getField('214', 'c') || '';
       const year = (getField('210', 'd') || getField('214', 'd') || '').replace(/[^0-9]/g, '').slice(0, 4);
       const subjects = getAllFields('610', 'a').concat(getAllFields('606', 'a'));
-
       if (!title || seen.has(title)) return;
       seen.add(title);
-
-      results.push({
-        title: fullTitle,
-        author_name: author ? [author] : ['Auteur inconnu'],
-        isbn: isbn ? [isbn] : [],
-        publisher: publisher ? [publisher] : [],
-        first_publish_year: year,
-        subject: subjects,
-        cover_i: null,
-        cover_url: null,
-        key: null,
-        _source: 'bnf',
-        _isbn: isbn,
-        _raw: { title: fullTitle, author, isbn, publisher, year, subjects }
-      });
+      results.push({ title: fullTitle, author_name: author ? [author] : ['Auteur inconnu'], isbn: isbn ? [isbn] : [], publisher: publisher ? [publisher] : [], first_publish_year: year, subject: subjects, cover_i: null, cover_url: null, key: null, _source: 'bnf', _isbn: isbn, _raw: { title: fullTitle, author, isbn, publisher, year, subjects } });
     });
 
-    if (!results.length) {
-      toast('Livre non trouvé dans aucune base de données');
-      showLoader(false);
-      return;
-    }
+    if (!results.length) return false;
 
-    // Récupère la couverture via Google Books avec l'ISBN
+    // Enrichit avec Google Books (couverture + résumé)
     for (const b of results) {
       if (b._isbn) {
         try {
@@ -824,158 +690,216 @@ async function fetchFromBnF(query, isISBN = false) {
     if (results.length === 1 || isISBN) {
       const b = results[0];
       currentBook = {
-        id: Date.now(),
-        isbn: b._isbn || '',
-        title: b.title,
+        id: Date.now(), isbn: b._isbn || '', title: b.title,
         author: b.author_name[0] || 'Auteur inconnu',
         genre: detectGenre(b.subject, b.title, b.author_name[0]),
         description: b._raw.description || 'Pas de résumé disponible.',
-        cover: b.cover_url || null,
-        publisher: b.publisher[0] || '',
-        year: b.first_publish_year || '',
-        pages: null,
-        language: 'fr',
-        rating: 0,
-        note: '',
-        addedAt: new Date().toLocaleDateString('fr-FR')
+        cover: b.cover_url || null, publisher: b.publisher[0] || '',
+        year: b.first_publish_year || '', pages: null, language: 'fr',
+        rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
       };
       showLoader(false);
       displayPreview(currentBook);
+      return true;
     } else {
       showLoader(false);
       displaySearchResults(results);
+      return true;
     }
-  } catch(e) {
-    toast('Erreur BnF. Vérifie internet.');
-    showLoader(false);
-  }
+  } catch(e) { return false; }
 }
 
-async function fetchFromGoogleBooks(query) {
+// ── INVENTAIRE ──
+async function fetchFromInventaire(query) {
   try {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6&langRestrict=fr`);
+    const res = await fetch(`https://inventaire.io/api/search?types=works&search=${encodeURIComponent(query)}&lang=fr`);
     const data = await res.json();
-    if (!data.items || !data.items.length) {
-      const res2 = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
-      const data2 = await res2.json();
-      if (!data2.items || !data2.items.length) {
-        await fetchFromBnF(query, query.startsWith('isbn:'));
-        return;
-      }
-      data.items = data2.items;
-    }
+    const results = data.results?.filter(b => b.label && b.type === 'works') || [];
+    if (!results.length) { toast('Livre non trouvé dans aucune base de données'); showLoader(false); return; }
 
-    if (data.items.length === 1 || query.startsWith('isbn:')) {
-      const info = data.items[0].volumeInfo;
-      const cover = info.imageLinks
-        ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null)
-        : null;
+    const enriched = await Promise.all(results.slice(0, 6).map(async b => {
+      try {
+        const detailRes = await fetch(`https://inventaire.io/api/entities?action=by-uris&uris=${b.uri}&lang=fr`);
+        const detail = await detailRes.json();
+        const entity = detail.entities?.[b.uri];
+        const claims = entity?.claims || {};
+        const isbn = claims['wdt:P212']?.[0] || claims['wdt:P957']?.[0] || '';
+        const authorUri = claims['wdt:P50']?.[0] || '';
+        let author = 'Auteur inconnu';
+        if (authorUri) {
+          try {
+            const aRes = await fetch(`https://inventaire.io/api/entities?action=by-uris&uris=${authorUri}&lang=fr`);
+            const aData = await aRes.json();
+            author = aData.entities?.[authorUri]?.labels?.fr || aData.entities?.[authorUri]?.labels?.en || 'Auteur inconnu';
+          } catch(e) {}
+        }
+        const description = entity?.descriptions?.fr || entity?.descriptions?.en || 'Pas de résumé disponible.';
+        const cover = b.image ? `https://inventaire.io${b.image}` : null;
+        const year = claims['wdt:P577']?.[0]?.slice(0, 4) || claims['wdt:P571']?.[0]?.slice(0, 4) || '';
+        return { title: b.label, author_name: [author], isbn: isbn ? [isbn] : [], publisher: [], first_publish_year: year, subject: [], cover_i: null, cover_url: cover, key: null, _source: 'inventaire', _raw: { title: b.label, author, isbn, description, year } };
+      } catch(e) {
+        return { title: b.label, author_name: ['Auteur inconnu'], isbn: [], cover_url: b.image ? `https://inventaire.io${b.image}` : null, first_publish_year: '', subject: [], _source: 'inventaire', _raw: { title: b.label, description: 'Pas de résumé disponible.' } };
+      }
+    }));
+
+    if (enriched.length === 1) {
+      const b = enriched[0];
       currentBook = {
-        id: Date.now(),
-        isbn: info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || '',
-        title: info.title || 'Titre inconnu',
-        author: (info.authors || ['Auteur inconnu']).join(', '),
-        genre: detectGenre(info.categories, info.title, info.authors?.[0]),
-        description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
-        cover: cover ? cover.replace('http://', 'https://') : null,
-        publisher: info.publisher || '',
-        year: info.publishedDate ? info.publishedDate.slice(0,4) : '',
-        pages: info.pageCount || null,
-        language: info.language || '',
-        rating: 0,
-        note: '',
-        addedAt: new Date().toLocaleDateString('fr-FR')
+        id: Date.now(), isbn: b.isbn?.[0] || '', title: b.title,
+        author: b.author_name[0] || 'Auteur inconnu',
+        genre: detectGenre(b.subject, b.title, b.author_name[0]),
+        description: b._raw.description || 'Pas de résumé disponible.',
+        cover: b.cover_url || null, publisher: b.publisher?.[0] || '',
+        year: b.first_publish_year || '', pages: null, language: 'fr',
+        rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
       };
       showLoader(false);
       displayPreview(currentBook);
     } else {
-      const results = data.items.map(item => {
-        const info = item.volumeInfo;
-        return {
-          title: info.title,
-          author_name: info.authors || [],
-          cover_i: null,
-          cover_url: info.imageLinks?.thumbnail?.replace('http://', 'https://') || null,
-          first_publish_year: info.publishedDate?.slice(0,4) || '',
-          publisher: info.publisher ? [info.publisher] : [],
-          subject: info.categories || [],
-          isbn: [info.industryIdentifiers?.find(i => i.type === 'ISBN_13')?.identifier || ''],
-          key: null,
-          _source: 'google',
-          _raw: info
-        };
-      });
       showLoader(false);
-      displaySearchResults(results);
+      displaySearchResults(enriched);
     }
-  } catch(e) {
-    showLoader(false);
-    toast('Erreur de connexion. Vérifie internet.');
-  }
+  } catch(e) { toast('Livre non trouvé dans aucune base de données'); showLoader(false); }
 }
 
-async function fetchBook(isbn) {
+function displaySearchResults(results) {
+  const container = document.getElementById('search-results');
+  container.style.display = 'block';
+  container.innerHTML = results.map((b, i) => {
+    const coverUrl = b.cover_url || (b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-S.jpg` : null);
+    const cover = coverUrl ? `<img class="search-result-thumb" src="${coverUrl}" onerror="this.style.display='none'">` : `<div class="search-result-thumb-ph">📚</div>`;
+    return `<div class="search-result-item" onclick="selectSearchResult(${i})">
+      ${cover}
+      <div class="search-result-info">
+        <div class="search-result-title">${b.title}</div>
+        <div class="search-result-author">${b.author_name?.[0] || 'Auteur inconnu'}</div>
+        <div class="search-result-year">${b.first_publish_year || ''} ${b.publisher?.[0] ? '· ' + b.publisher[0] : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  window._searchResults = results;
+}
+
+async function selectSearchResult(idx) {
+  const searchBook = window._searchResults[idx];
+  hideSearchResults();
   showLoader(true);
   hidePreview();
-  try {
-    const [olRes, searchRes] = await Promise.all([
-      fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`),
-      fetch(`https://openlibrary.org/search.json?isbn=${isbn}`)
-    ]);
-    const olData = await olRes.json();
-    const searchData = await searchRes.json();
-    const key = `ISBN:${isbn}`;
-    const book = olData[key];
-    const searchBook = searchData.docs?.[0];
 
-    if (!book && !searchBook) {
-      const googleRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
-      const googleData = await googleRes.json();
-      if (googleData.items?.length) {
-        await fetchFromGoogleBooks(`isbn:${isbn}`);
-      } else {
-        await fetchFromBnF(isbn, true);
-      }
-      return;
-    }
-
-    let description = 'Pas de résumé disponible.';
-    const workKey = searchBook?.key;
-    if (workKey) {
-      try {
-        const workRes = await fetch(`https://openlibrary.org${workKey}.json`);
-        const workData = await workRes.json();
-        if (workData.description) {
-          const raw = typeof workData.description === 'string'
-            ? workData.description
-            : workData.description.value || description;
-          description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
-        }
-      } catch(e) {}
-    }
-
+  if (searchBook._source === 'google') {
+    const info = searchBook._raw;
+    const cover = info.imageLinks ? (info.imageLinks.extraLarge || info.imageLinks.large || info.imageLinks.thumbnail || null) : null;
     currentBook = {
-      id: Date.now(),
-      isbn,
-      title: book?.title || searchBook?.title || 'Titre inconnu',
-      author: book?.authors?.map(a => a.name).join(', ') || searchBook?.author_name?.join(', ') || 'Auteur inconnu',
-      genre: detectGenre(book?.subjects?.map(s => s.name) || searchBook?.subject, book?.title || searchBook?.title, book?.authors?.[0]?.name || searchBook?.author_name?.[0]),
-      description,
-      cover: book?.cover?.large || book?.cover?.medium || (searchBook?.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
-      publisher: book?.publishers?.[0]?.name || searchBook?.publisher?.[0] || '',
-      year: book?.publish_date?.slice(-4) || searchBook?.first_publish_year?.toString() || '',
-      pages: book?.number_of_pages || searchBook?.number_of_pages_median || null,
-      language: '',
-      rating: 0,
-      note: '',
-      addedAt: new Date().toLocaleDateString('fr-FR')
+      id: Date.now(), isbn: searchBook.isbn?.[0] || '',
+      title: info.title || 'Titre inconnu',
+      author: (info.authors || ['Auteur inconnu']).join(', '),
+      genre: detectGenre(info.categories, info.title, info.authors?.[0]),
+      description: info.description ? info.description.replace(/\*/g, '').replace(/\n+/g, ' ').trim() : 'Pas de résumé disponible.',
+      cover: cover ? cover.replace('http://', 'https://') : null,
+      publisher: info.publisher || '', year: info.publishedDate?.slice(0,4) || '',
+      pages: info.pageCount || null, language: info.language || '',
+      rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
     };
-    showLoader(false);
-    displayPreview(currentBook);
-  } catch(e) {
-    showLoader(false);
-    toast('Erreur de connexion. Vérifie internet.');
+    showLoader(false); displayPreview(currentBook); return;
   }
+
+  if (searchBook._source === 'inventaire') {
+    currentBook = {
+      id: Date.now(), isbn: searchBook.isbn?.[0] || '',
+      title: searchBook.title, author: searchBook.author_name?.[0] || 'Auteur inconnu',
+      genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
+      description: searchBook._raw?.description || 'Pas de résumé disponible.',
+      cover: searchBook.cover_url || null, publisher: searchBook.publisher?.[0] || '',
+      year: searchBook.first_publish_year || '', pages: null, language: 'fr',
+      rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
+    };
+    showLoader(false); displayPreview(currentBook); return;
+  }
+
+  if (searchBook._source === 'bnf') {
+    currentBook = {
+      id: Date.now(), isbn: searchBook._isbn || '',
+      title: searchBook.title, author: searchBook.author_name?.[0] || 'Auteur inconnu',
+      genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
+      description: searchBook._raw?.description || 'Pas de résumé disponible.',
+      cover: searchBook.cover_url || null, publisher: searchBook.publisher?.[0] || '',
+      year: searchBook.first_publish_year || '', pages: null, language: 'fr',
+      rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
+    };
+    showLoader(false); displayPreview(currentBook); return;
+  }
+
+  // Open Library
+  let description = 'Pas de résumé disponible.';
+  if (searchBook.key) {
+    try {
+      const workRes = await fetch(`https://openlibrary.org${searchBook.key}.json`);
+      const workData = await workRes.json();
+      if (workData.description) {
+        const raw = typeof workData.description === 'string' ? workData.description : workData.description.value || description;
+        description = raw.replace(/\*/g, '').replace(/\n+/g, ' ').trim();
+      }
+    } catch(e) {}
+  }
+  currentBook = {
+    id: Date.now(), isbn: searchBook.isbn?.[0] || '',
+    title: searchBook.title || 'Titre inconnu',
+    author: searchBook.author_name?.join(', ') || 'Auteur inconnu',
+    genre: detectGenre(searchBook.subject, searchBook.title, searchBook.author_name?.[0]),
+    description, cover: searchBook.cover_url || (searchBook.cover_i ? `https://covers.openlibrary.org/b/id/${searchBook.cover_i}-L.jpg` : null),
+    publisher: searchBook.publisher?.[0] || '', year: searchBook.first_publish_year?.toString() || '',
+    pages: searchBook.number_of_pages_median || null, language: '',
+    rating: 0, note: '', addedAt: new Date().toLocaleDateString('fr-FR')
+  };
+  showLoader(false);
+  displayPreview(currentBook);
+}
+
+function detectGenre(subjects, title, author) {
+  const map = {
+    'Roman': ['fiction', 'novel', 'roman', 'littérature', 'literature', 'literary', 'general fiction', 'contemporary fiction'],
+    'Policier': ['detective', 'mystery', 'crime', 'thriller', 'policier', 'suspense', 'noir'],
+    'Science-fiction': ['science fiction', 'sci-fi', 'space', 'futuristic', 'dystopia', 'dystopie', 'speculative'],
+    'Fantasy': ['fantasy', 'magic', 'wizard', 'dragon', 'fantastique', 'heroic', 'supernatural'],
+    'Biographie': ['biography', 'autobiography', 'memoir', 'biographie', 'mémoires'],
+    'Histoire': ['history', 'historical', 'histoire', 'war', 'guerre', 'civilization'],
+    'Philosophie': ['philosophy', 'philosophie', 'ethics', 'éthique', 'absurd', 'existential'],
+    'Sciences': ['science', 'physics', 'biology', 'chemistry', 'mathematics', 'physique', 'nature', 'environment', 'climat', 'climate', 'ecology', 'écologie', 'glacier'],
+    'Développement personnel': ['self-help', 'personal development', 'motivation', 'leadership'],
+    'Économie': ['economics', 'economy', 'finance', 'business', 'économie'],
+    'Psychologie': ['psychology', 'psychologie', 'mental', 'behavior', 'comportement'],
+    'Art': ['art', 'painting', 'photography', 'design', 'architecture'],
+    'Cuisine': ['cooking', 'cuisine', 'recipe', 'food', 'gastronomie'],
+    'Voyage': ['travel', 'voyage', 'geography', 'géographie', 'exploration', 'adventure'],
+    'Jeunesse': ['children', 'juvenile', 'young adult', 'jeunesse', 'youth', 'teen'],
+    'Poésie': ['poetry', 'poésie', 'poems', 'verse'],
+    'Bande dessinée': ['comics', 'graphic novel', 'manga', 'bande dessinée'],
+    'Religion': ['religion', 'spirituality', 'christianity', 'islam', 'buddhism'],
+    'Politique': ['politics', 'political', 'politique', 'government', 'democracy'],
+  };
+  if (subjects && subjects.length) {
+    const subjectsLower = subjects.map(s => s.toLowerCase());
+    for (const [genre, keywords] of Object.entries(map)) {
+      for (const subject of subjectsLower) {
+        for (const keyword of keywords) {
+          if (subject.includes(keyword)) return genre;
+        }
+      }
+    }
+    const first = subjects[0];
+    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+  }
+  const text = ((title || '') + ' ' + (author || '')).toLowerCase();
+  for (const [genre, keywords] of Object.entries(map)) {
+    for (const keyword of keywords) { if (text.includes(keyword)) return genre; }
+  }
+  return 'Roman';
+}
+
+function hideSearchResults() {
+  const container = document.getElementById('search-results');
+  container.style.display = 'none';
+  container.innerHTML = '';
 }
 
 function displayPreview(book) {
@@ -989,9 +913,9 @@ function displayPreview(book) {
   btnEl.textContent = 'Lire la suite ↓';
   btnEl.style.display = book.description.length > 150 ? 'inline-block' : 'none';
   const wrap = document.getElementById('preview-cover-wrap');
-  wrap.innerHTML = book.cover
-    ? `<img class="cover-img" src="${book.cover}" onerror="this.style.display='none'">`
-    : `<div class="cover-placeholder">📚</div>`;
+  wrap.innerHTML = book.cover ? `<img class="cover-img" src="${book.cover}" onerror="this.style.display='none'">` : `<div class="cover-placeholder">📚</div>`;
+  document.getElementById('add-cover-btn').textContent = book.cover ? '🖼 Changer l\'image' : '🖼 Ajouter une image';
+  document.getElementById('cover-url-wrap').style.display = 'none';
   setRating(0);
   document.getElementById('note-input').value = '';
   document.getElementById('book-preview').classList.add('visible');
@@ -1002,7 +926,7 @@ function toggleCoverInput() {
   const btn = document.getElementById('add-cover-btn');
   const isVisible = wrap.style.display !== 'none';
   wrap.style.display = isVisible ? 'none' : 'block';
-  btn.textContent = isVisible ? '🖼 Ajouter une image' : '✕ Annuler';
+  btn.textContent = isVisible ? (currentBook?.cover ? '🖼 Changer l\'image' : '🖼 Ajouter une image') : '✕ Annuler';
 }
 
 function applyCoverUrl() {
@@ -1021,19 +945,13 @@ function applyCoverUrl() {
 function toggleDesc() {
   const desc = document.getElementById('prev-desc');
   const btn = document.getElementById('read-more-btn');
-  if (desc.classList.contains('clamped')) {
-    desc.classList.remove('clamped');
-    btn.textContent = 'Réduire ↑';
-  } else {
-    desc.classList.add('clamped');
-    btn.textContent = 'Lire la suite ↓';
-  }
+  if (desc.classList.contains('clamped')) { desc.classList.remove('clamped'); btn.textContent = 'Réduire ↑'; }
+  else { desc.classList.add('clamped'); btn.textContent = 'Lire la suite ↓'; }
 }
 
 function hidePreview() {
   document.getElementById('book-preview').classList.remove('visible');
-  currentBook = null;
-  currentRating = 0;
+  currentBook = null; currentRating = 0;
 }
 
 function setRating(n) {
@@ -1089,14 +1007,7 @@ function renderLibrary() {
     const coverHtml = b.cover
       ? `<div class="card-cover-wrap"><img class="card-cover" src="${b.cover}" onerror="this.parentElement.innerHTML='<div class=\'card-cover-ph\'>📚</div>'"></div>`
       : `<div class="card-cover-wrap"><div class="card-cover-ph">📚</div></div>`;
-    return `<div class="book-card" onclick="openModal(${realIdx})">
-      ${coverHtml}
-      <div class="card-info">
-        <div class="card-title">${b.title}</div>
-        <div class="card-author">${b.author}</div>
-        <div class="card-stars" style="color:var(--gold)">${stars}</div>
-      </div>
-    </div>`;
+    return `<div class="book-card" onclick="openModal(${realIdx})">${coverHtml}<div class="card-info"><div class="card-title">${b.title}</div><div class="card-author">${b.author}</div><div class="card-stars" style="color:var(--gold)">${stars}</div></div></div>`;
   }).join('');
 }
 
@@ -1113,6 +1024,8 @@ function openModal(idx) {
   document.getElementById('modal-note-text').textContent = b.note || 'Aucune note personnelle.';
   const wrap = document.getElementById('modal-cover-wrap');
   wrap.innerHTML = b.cover ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">` : `<div class="modal-cover-ph">📚</div>`;
+  document.getElementById('modal-view-mode').style.display = 'block';
+  document.getElementById('modal-edit-mode').style.display = 'none';
   document.getElementById('modal-bg').classList.add('open');
 }
 
@@ -1135,9 +1048,7 @@ function cancelEditMode() {
 
 function setModalRating(n) {
   modalCurrentRating = n;
-  document.querySelectorAll('.star-edit').forEach(s => {
-    s.classList.toggle('active', parseInt(s.dataset.v) <= n);
-  });
+  document.querySelectorAll('.star-edit').forEach(s => s.classList.toggle('active', parseInt(s.dataset.v) <= n));
 }
 
 async function saveBookEdit() {
@@ -1147,32 +1058,19 @@ async function saveBookEdit() {
   b.note = document.getElementById('modal-note-edit').value.trim();
   const newCover = document.getElementById('modal-cover-input').value.trim();
   if (newCover) b.cover = newCover;
-
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/Livres?isbn=eq.${b.isbn}`, {
       method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ rating: b.rating, note: b.note, cover: b.cover })
     });
   } catch(e) { console.log('Update Supabase échoué', e); }
-
-  saveLibrary();
-  renderLibrary();
-  renderStats();
-
+  saveLibrary(); renderLibrary(); renderStats();
   const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) : '☆☆☆☆☆';
   document.getElementById('modal-stars').innerHTML = `<span style="color:var(--gold)">${stars}</span> ${b.rating ? b.rating + '/5' : 'Non noté'}`;
   document.getElementById('modal-note-text').textContent = b.note || 'Aucune note personnelle.';
-  
   const wrap = document.getElementById('modal-cover-wrap');
-  wrap.innerHTML = b.cover
-    ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">`
-    : `<div class="modal-cover-ph">📚</div>`;
-
+  wrap.innerHTML = b.cover ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">` : `<div class="modal-cover-ph">📚</div>`;
   cancelEditMode();
   toast('✓ Modifications sauvegardées !');
 }
@@ -1186,10 +1084,7 @@ function deleteCurrentBook() {
   const b = library[activeModalIdx];
   deleteFromSupabase(b.isbn);
   library.splice(activeModalIdx, 1);
-  saveLibrary();
-  closeModal();
-  renderLibrary();
-  updateHeaderStats();
+  saveLibrary(); closeModal(); renderLibrary(); updateHeaderStats();
   toast('🗑 ' + b.title + ' supprimé');
 }
 
