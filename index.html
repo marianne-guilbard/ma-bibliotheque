@@ -437,6 +437,13 @@
         </div>
       </div>
       <textarea class="note-area" id="modal-note-edit" placeholder="Ajouter une note personnelle…"></textarea>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.72rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Image de couverture</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="isbn-input" id="modal-cover-input" type="url" placeholder="Coller URL image… (clic droit → copier l'adresse)" style="font-size:0.78rem;padding:10px 12px">
+        </div>
+        <div style="font-size:0.7rem;color:var(--ink-muted);margin-top:4px">Google Images → clic sur image → clic droit → "Copier l'adresse de l'image"</div>
+      </div>
       <div class="modal-actions">
         <button class="btn-close" onclick="cancelEditMode()">Annuler</button>
         <button class="btn-save" onclick="saveBookEdit()">✓ Sauvegarder</button>
@@ -1082,6 +1089,7 @@ function enableEditMode() {
   const b = library[activeModalIdx];
   modalCurrentRating = b.rating || 0;
   document.getElementById('modal-note-edit').value = b.note || '';
+  document.getElementById('modal-cover-input').value = b.cover || '';
   setModalRating(modalCurrentRating);
   document.getElementById('modal-view-mode').style.display = 'none';
   document.getElementById('modal-edit-mode').style.display = 'block';
@@ -1104,8 +1112,9 @@ async function saveBookEdit() {
   const b = library[activeModalIdx];
   b.rating = modalCurrentRating;
   b.note = document.getElementById('modal-note-edit').value.trim();
+  const newCover = document.getElementById('modal-cover-input').value.trim();
+  if (newCover) b.cover = newCover;
 
-  // Update Supabase
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/Livres?isbn=eq.${b.isbn}`, {
       method: 'PATCH',
@@ -1114,7 +1123,7 @@ async function saveBookEdit() {
         'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ rating: b.rating, note: b.note })
+      body: JSON.stringify({ rating: b.rating, note: b.note, cover: b.cover })
     });
   } catch(e) { console.log('Update Supabase échoué', e); }
 
@@ -1122,10 +1131,14 @@ async function saveBookEdit() {
   renderLibrary();
   renderStats();
 
-  // Refresh modal display
   const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) : '☆☆☆☆☆';
   document.getElementById('modal-stars').innerHTML = `<span style="color:var(--gold)">${stars}</span> ${b.rating ? b.rating + '/5' : 'Non noté'}`;
   document.getElementById('modal-note-text').textContent = b.note || 'Aucune note personnelle.';
+  
+  const wrap = document.getElementById('modal-cover-wrap');
+  wrap.innerHTML = b.cover
+    ? `<img class="modal-cover" src="${b.cover}" onerror="this.style.display='none'">`
+    : `<div class="modal-cover-ph">📚</div>`;
 
   cancelEditMode();
   toast('✓ Modifications sauvegardées !');
