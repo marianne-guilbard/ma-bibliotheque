@@ -288,6 +288,8 @@
 <div class="app" id="main-app">
   <div id="readonly-banner" style="display:none; background:var(--accent-light); color:var(--accent); text-align:center; padding:10px; font-size:0.82rem; font-family:var(--font-body);">
   👁 Vous consultez la bibliothèque de <b id="readonly-name"></b> — lecture seule
+  &nbsp;·&nbsp;
+  <button onclick="goToAuthPage()" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:4px 12px; font-size:0.82rem; font-family:var(--font-body); cursor:pointer;">Se connecter</button>
 </div>
   <div class="header">
    <div class="header-inner">
@@ -1057,6 +1059,11 @@ function shareLibrary() {
   });
 }
 
+function goToAuthPage() {
+  document.getElementById('main-app').classList.remove('active');
+  document.getElementById('auth-page').classList.add('active');
+}
+
 async function loadSharedLibrary(userId) {
   // Cache auth et montre directement la bibliothèque en lecture seule
   document.getElementById('auth-page').classList.remove('active');
@@ -1068,7 +1075,13 @@ async function loadSharedLibrary(userId) {
   document.getElementById('logout-btn').style.display = 'none';
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) shareBtn.style.display = 'none';
-  
+
+  // Cache les sauvegardes dans stats
+  const dataActions = document.querySelector('.data-actions');
+  const dataSectionTitle = document.querySelector('.data-section-title');
+  if (dataActions) dataActions.style.display = 'none';
+  if (dataSectionTitle) dataSectionTitle.style.display = 'none';
+
   // Cache l'onglet scanner
   document.querySelectorAll('.tab-btn')[0].style.display = 'none';
 
