@@ -517,9 +517,9 @@ function showAuthPage() {
 
 function switchAuthTab(mode) {
   authMode = mode;
-  document.querySelectorAll('.auth-tab').forEach((t, i) => {
-    t.classList.toggle('active', (mode === 'login' && i === 0) || (mode === 'signup' && i === 1));
-  });
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs[0].classList.toggle('active', mode === 'login');
+  tabs[1].classList.toggle('active', mode === 'signup');
   document.getElementById('auth-name-wrap').style.display = mode === 'signup' ? 'block' : 'none';
   document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Se connecter' : "S'inscrire";
   document.getElementById('auth-error').classList.remove('show');
