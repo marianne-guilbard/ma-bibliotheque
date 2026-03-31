@@ -1066,8 +1066,9 @@ async function loadSharedLibrary(userId) {
 
   // Cache les boutons d'action
   document.getElementById('logout-btn').style.display = 'none';
-  document.getElementById('share-btn').style.display = 'none';
-
+  const shareBtn = document.getElementById('share-btn');
+  if (shareBtn) shareBtn.style.display = 'none';
+  
   // Cache l'onglet scanner
   document.querySelectorAll('.tab-btn')[0].style.display = 'none';
 
